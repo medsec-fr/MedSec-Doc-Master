@@ -1,0 +1,2289 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MedSec — Comprendre et analyser la cybersécurité hospitalière</title>
+  <meta name="description" content="MedSec est une initiative académique et pédagogique dédiée à la cybersécurité des infrastructures hospitalières et médicales : compréhension, analyses, visualisations et prévention." />
+  <meta name="theme-color" content="#10b981" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style>
+    :root{
+      --ms-blue:#0ea5e9; /* sky-500 */
+      --ms-cyan:#22d3ee; /* cyan-400 */
+      --ms-green:#10b981; /* emerald-500 */
+      --ms-purple:#8b5cf6; /* violet-500 */
+      --ms-ink:#0b1220;
+      --ms-muted:#475569;
+      --ms-grid: rgba(16, 185, 129, .08);
+      --ms-grid2: rgba(34, 211, 238, .06);
+    }
+
+    /* Custom cursor */
+    body {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="8" fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.8)" stroke-width="2"/><circle cx="16" cy="16" r="2" fill="rgba(16,185,129,1)"/><path d="M16 4v6M16 22v6M4 16h6M22 16h6" stroke="rgba(16,185,129,0.5)" stroke-width="1" stroke-linecap="round"/></svg>') 16 16, crosshair;
+    }
+
+    a, button, input, textarea, select, .clickable {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="rgba(34,211,238,0.2)" stroke="rgba(34,211,238,0.9)" stroke-width="2"/><circle cx="16" cy="16" r="3" fill="rgba(34,211,238,1)"/><path d="M16 6v4M16 22v4M6 16h4M22 16h4" stroke="rgba(34,211,238,0.6)" stroke-width="1.5" stroke-linecap="round"/></svg>') 16 16, pointer;
+    }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #10b981, #22d3ee, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .gradient-text-2 {
+      background: linear-gradient(135deg, #10b981, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Header glass */
+    .glass-header {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(16,185,129,0.25);
+    }
+
+    /* Header text colors - GREEN/CYAN focused */
+    .header-brand {
+      background: linear-gradient(135deg, #10b981, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 800;
+    }
+    .header-link {
+      color: #0f172a;
+      transition: color 200ms ease;
+    }
+    .header-link:hover {
+      color: #10b981;
+    }
+    .header-cta {
+      background: linear-gradient(135deg, #10b981, #22d3ee);
+      color: white;
+    }
+    .header-cta:hover {
+      background: linear-gradient(135deg, #059669, #0891b2);
+    }
+
+    /* Hover animations */
+    @keyframes hoverGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(16,185,129,0.1), 0 4px 12px rgba(16,185,129,0.05); }
+      50% { box-shadow: 0 0 30px rgba(16,185,129,0.2), 0 6px 16px rgba(16,185,129,0.1); }
+    }
+
+    .hover-glow {
+      transition: all 300ms ease;
+    }
+    .hover-glow:hover {
+      animation: hoverGlow 2s ease-in-out infinite;
+      transform: translateY(-2px);
+    }
+
+    /* Card hover effects */
+    .card-hover {
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(16,185,129,0.15);
+    }
+    .card-hover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(34,211,238,0.08), transparent);
+      transform: translateX(-100%);
+      transition: transform 600ms ease;
+    }
+    .card-hover:hover::before {
+      transform: translateX(100%);
+    }
+    .card-hover:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 12px 24px rgba(16,185,129,0.15), 0 8px 16px rgba(34,211,238,0.1);
+      border-color: rgba(16,185,129,0.3);
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,249,255,0.9));
+    }
+
+    /* Button pulse on hover */
+    @keyframes buttonPulse {
+      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+    }
+    .btn-pulse:hover {
+      animation: buttonPulse 1.5s infinite;
+    }
+
+    /* Subtle medical-tech grid background */
+    .bg-medgrid{
+      background:
+        radial-gradient(800px 500px at 10% 10%, rgba(34,211,238,.16), transparent 60%),
+        radial-gradient(700px 480px at 90% 20%, rgba(16,185,129,.12), transparent 60%),
+        radial-gradient(900px 520px at 40% 90%, rgba(14,165,233,.10), transparent 62%),
+        linear-gradient(0deg, rgba(255,255,255,1), rgba(255,255,255,1));
+      position: relative;
+      isolation: isolate;
+    }
+    .bg-medgrid:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(to right, var(--ms-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--ms-grid2) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: radial-gradient(ellipse at 30% 25%, rgba(0,0,0,.95), rgba(0,0,0,.15) 55%, rgba(0,0,0,0) 75%);
+      pointer-events:none;
+      z-index:-1;
+    }
+
+    /* Scroll reveal */
+    .reveal{
+      opacity: 0;
+      transform: translateY(14px);
+      filter: blur(2px);
+      transition: opacity 900ms ease, transform 900ms ease, filter 900ms ease;
+      will-change: opacity, transform, filter;
+    }
+    .reveal.in{
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+    .reveal.delay-1{ transition-delay: 140ms; }
+    .reveal.delay-2{ transition-delay: 260ms; }
+    .reveal.delay-3{ transition-delay: 380ms; }
+
+    /* Gentle pulse for points */
+    @keyframes softPulse {
+      0% { box-shadow: 0 0 0 0 rgba(16,185,129,.25); transform: translate(-50%,-50%) scale(1); }
+      70% { box-shadow: 0 0 0 12px rgba(16,185,129,0); transform: translate(-50%,-50%) scale(1.02); }
+      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); transform: translate(-50%,-50%) scale(1); }
+    }
+
+    /* SVG flow animation */
+    .flow-line{
+      stroke-dasharray: 6 10;
+      animation: dashMove 9s linear infinite;
+    }
+    @keyframes dashMove{
+      from{ stroke-dashoffset: 0; }
+      to{ stroke-dashoffset: -160; }
+    }
+
+    .flow-dot{
+      animation: floatDot 6.5s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes floatDot{
+      0%,100%{ transform: translateY(0); opacity: .85; }
+      50%{ transform: translateY(-4px); opacity: 1; }
+    }
+
+    /* Timeline progress */
+    .progress-line{
+      width: 0%;
+      transition: width 1400ms ease;
+    }
+    .progress-line.fill{ width: 100%; }
+
+    /* Heatmap shimmer */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .heat-sheen{
+      background: linear-gradient(90deg, rgba(16,185,129,.08), rgba(34,211,238,.18), rgba(14,165,233,.10));
+      background-size: 200% 100%;
+      animation: shimmer 10s ease-in-out infinite;
+    }
+
+    /* Respect prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce){
+      .reveal{ transition: none; transform:none; opacity:1; filter:none; }
+      .flow-line, .flow-dot, .heat-sheen{ animation: none !important; }
+    }
+
+    /* Smooth anchor scroll */
+    html{ scroll-behavior: smooth; }
+
+    /* Nicer focus */
+    :focus-visible{ outline: 2px solid rgba(16,185,129,.65); outline-offset: 3px; border-radius: 10px; }
+
+    /* Small glass effect */
+    .glass{
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* Back-to-top */
+    .fab{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 300ms ease, transform 300ms ease;
+    }
+    .fab.show{
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Section backgrounds - MORE GREEN, LESS PURPLE */
+    .section-gradient-1 {
+      background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(34,211,238,0.05));
+    }
+    .section-gradient-2 {
+      background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(16,185,129,0.05));
+    }
+    .section-gradient-3 {
+      background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(14,165,233,0.05));
+    }
+    .section-gradient-4 {
+      background: linear-gradient(135deg, rgba(14,165,233,0.08), rgba(16,185,129,0.05));
+    }
+    .section-gradient-5 {
+      background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(16,185,129,0.05));
+    }
+
+    /* Resource content toggle */
+    .resource-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 400ms ease, opacity 400ms ease;
+      opacity: 0;
+    }
+    .resource-content.open {
+      max-height: 800px;
+      opacity: 1;
+    }
+
+    /* Resource card open state */
+    .resource-card.open {
+      transform: scale(1.02);
+      box-shadow: 0 15px 30px rgba(16,185,129,0.2);
+      border-color: var(--ms-cyan);
+    }
+
+    /* Rotate arrow on open */
+    .resource-card.open .resource-expand-icon {
+      transform: rotate(180deg);
+    }
+    .resource-expand-icon {
+      transition: transform 300ms ease;
+    }
+
+    /* Resource hover glow */
+    .resource-card:hover {
+      box-shadow: 0 8px 20px rgba(16,185,129,0.15);
+      transform: translateY(-2px);
+    }
+
+    /* Resource icon hover */
+    .resource-icon {
+      transition: transform 300ms ease;
+    }
+    .resource-card:hover .resource-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    /* Section title gradient */
+    .section-title-gradient {
+      background: linear-gradient(135deg, #10b981, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Resource filter buttons */
+    .resource-filter {
+      transition: all 200ms ease;
+    }
+    .resource-filter:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16,185,129,0.2);
+    }
+    .resource-filter.active {
+      background: linear-gradient(135deg, #10b981, #22d3ee);
+      color: white;
+      border-color: transparent;
+    }
+
+    /* Formations section accent */
+    .formation-highlight {
+      background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(34,211,238,0.1));
+      border: 1px solid rgba(16,185,129,0.2);
+    }
+
+    /* About section special */
+    .about-card {
+      background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(22,163,74,0.05));
+      border: 1px solid rgba(16,185,129,0.15);
+      transition: all 300ms ease;
+    }
+    .about-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(16,185,129,0.15);
+      border-color: rgba(16,185,129,0.3);
+    }
+
+    /* Icon hover rotate */
+    .icon-hover {
+      transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .icon-hover:hover {
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    /* Link underline animation */
+    .link-hover {
+      position: relative;
+      transition: color 300ms ease;
+    }
+    .link-hover::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #10b981, #22d3ee);
+      transition: width 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .link-hover:hover::after {
+      width: 100%;
+    }
+    .link-hover:hover {
+      color: #10b981;
+    }
+
+    /* Resource cards hover effect */
+    .resource-card {
+      transition: all 300ms ease;
+      border-left: 3px solid transparent;
+    }
+    .resource-card:hover {
+      border-left-color: var(--ms-cyan);
+      background: linear-gradient(90deg, rgba(34,211,238,0.05), transparent);
+      transform: translateX(4px);
+    }
+
+    /* Simulation progress bar */
+    .sim-progress {
+      transition: width 700ms ease-in-out;
+    }
+
+    /* Formation cards */
+    .formation-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,249,255,0.8));
+      border: 1px solid rgba(16,185,129,0.15);
+      transition: all 300ms ease;
+    }
+    .formation-card:hover {
+      border-color: rgba(16,185,129,0.3);
+      box-shadow: 0 10px 25px rgba(16,185,129,0.15);
+      transform: translateY(-3px);
+    }
+
+    /* Badge pulse */
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+    .badge-pulse {
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(16,185,129,0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #10b981, #22d3ee);
+      border-radius: 4px;
+    }
+
+    /* Resource modal overlay */
+    .resource-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 400ms ease;
+    }
+    .resource-modal.open {
+      display: flex;
+      opacity: 1;
+    }
+    .resource-modal-content {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid rgba(16,185,129,0.2);
+      max-width: 800px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: scale(0.95) translateY(20px);
+      transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 25px 50px rgba(16,185,129,0.2);
+    }
+    .resource-modal.open .resource-modal-content {
+      transform: scale(1) translateY(0);
+    }
+    .resource-close {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(135deg, #10b981, #22d3ee);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 24px 24px 0 0;
+      text-align: right;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      transition: background 300ms ease;
+    }
+    .resource-close:hover {
+      background: linear-gradient(135deg, #059669, #0891b2);
+    }
+    .resource-detail {
+      padding: 24px;
+    }
+    .resource-detail h3 {
+      color: #059669;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .resource-detail .meta {
+      color: #0891b2;
+      font-size: 0.875rem;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .resource-detail p {
+      color: #334155;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .resource-detail ul {
+      list-style: disc;
+      padding-left: 20px;
+      margin-bottom: 16px;
+      color: #334155;
+    }
+    .resource-detail ul li {
+      margin-bottom: 8px;
+    }
+    .resource-detail .badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .resource-detail .badges span {
+      background: rgba(16,185,129,0.1);
+      color: #059669;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body class="bg-medgrid text-slate-900 selection:bg-cyan-200/70 selection:text-slate-900">
+  <!-- Top navigation -->
+  <header class="sticky top-0 z-40 glass-header">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <a href="#top" class="group flex items-center gap-3 hover-glow" aria-label="Aller en haut de page">
+          <div class="relative icon-hover">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 via-cyan-400 to-sky-400 shadow-sm"></div>
+            <div class="absolute inset-[2px] rounded-[10px] bg-white/85"></div>
+            <svg class="absolute inset-0 m-auto" width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 12h10" stroke="var(--ms-green)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 7v10" stroke="var(--ms-cyan)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4.5 12c0-4.14 3.36-7.5 7.5-7.5S19.5 7.86 19.5 12 16.14 19.5 12 19.5 4.5 16.14 4.5 12Z" stroke="rgba(16,185,129,.45)" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="leading-tight">
+            <div class="text-sm font-semibold tracking-wide gradient-text">MedSec</div>
+            <div class="text-xs text-slate-500">Initiative académique</div>
+          </div>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-6 text-sm text-slate-700">
+          <a class="link-hover gradient-text-2 font-medium" href="#medsec">Démarche</a>
+          <a class="link-hover gradient-text-2 font-medium" href="#audits">Audits</a>
+          <a class="link-hover gradient-text-2 font-medium" href="#bases">Bases techniques</a>
+          <a class="link-hover gradient-text-2 font-medium" href="#chiffres">Chiffres</a>
+          <a class="link-hover gradient-text-2 font-medium" href="#ressources">Ressources</a>
+          <a class="link-hover gradient-text-2 font-medium" href="#ethique">Éthique</a>
+          <a class="link-hover gradient-text-2 font-medium" href="#a-propos">À propos</a>
+          <a class="btn-pulse inline-flex items-center gap-2 rounded-xl border border-emerald-300 bg-gradient-to-r from-emerald-50 to-cyan-50 px-3 py-1.5 shadow-sm hover:from-emerald-100 hover:to-cyan-100 transition-all" href="#contact">
+            <span class="text-emerald-700">Contact</span>
+            <span class="text-emerald-400">•</span>
+            <span class="text-xs text-emerald-600">académique</span>
+          </a>
+        </nav>
+
+        <button id="menuBtn" class="md:hidden inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm" aria-expanded="false" aria-controls="mobileMenu">
+          <span class="sr-only">Ouvrir le menu</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div id="mobileMenu" class="md:hidden hidden pb-4">
+        <div class="grid gap-2 text-sm">
+          <a class="rounded-xl px-3 py-2 hover:bg-slate-50" href="#medsec">Démarche</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-slate-50" href="#audits">Audits</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-slate-50" href="#bases">Bases techniques</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-slate-50" href="#chiffres">Chiffres</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-slate-50" href="#ressources">Ressources</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-slate-50" href="#ethique">Éthique</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-slate-50" href="#a-propos">À propos</a>
+          <a class="rounded-xl px-3 py-2 hover:bg-slate-50" href="#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero Section -->
+    <section class="relative">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 sm:py-18">
+        <div class="grid lg:grid-cols-12 gap-10 items-center">
+          <div class="lg:col-span-6">
+            <div class="reveal">
+              <div class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50/80 px-3 py-1 text-xs text-emerald-700 shadow-sm badge-pulse">
+                <span class="inline-block h-2 w-2 rounded-full bg-emerald-500"></span>
+                Plateforme éducative • scientifique • institutionnelle
+              </div>
+            </div>
+            <h1 class="reveal delay-1 mt-5 text-3xl sm:text-5xl font-semibold tracking-tight">
+              <span class="gradient-text">MedSec</span> – <span class="text-slate-900">Comprendre et analyser la cybersécurité hospitalière</span>
+            </h1>
+            <p class="reveal delay-2 mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+              Une approche <span class="font-semibold text-emerald-600">pédagogique</span> et <span class="font-semibold text-cyan-600">technique</span> de la sécurité des systèmes médicaux : réseaux, équipements connectés, protocoles cliniques et enjeux de continuité des soins.
+            </p>
+
+            <div class="reveal delay-3 mt-7 flex flex-col sm:flex-row gap-3">
+              <a href="#bases" class="btn-pulse inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-600 via-cyan-600 to-sky-600 px-5 py-3 text-white shadow-lg hover:from-emerald-700 hover:to-sky-700 transition-all transform hover:scale-105">
+                Comprendre la cybersécurité hospitalière
+              </a>
+              <a href="#audits" class="card-hover inline-flex items-center justify-center rounded-2xl border border-emerald-200 bg-white px-5 py-3 text-emerald-800 shadow-sm hover:text-emerald-900">
+                Explorer les analyses
+              </a>
+            </div>
+
+            <dl class="reveal delay-3 mt-8 grid grid-cols-2 gap-4">
+              <div class="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4 shadow-sm">
+                <dt class="text-xs text-emerald-700 font-medium">Positionnement</dt>
+                <dd class="mt-1 text-sm font-semibold text-emerald-900">Académique & professionnel</dd>
+              </div>
+              <div class="rounded-2xl border border-cyan-200 bg-cyan-50/80 p-4 shadow-sm">
+                <dt class="text-xs text-cyan-700 font-medium">Objectif</dt>
+                <dd class="mt-1 text-sm font-semibold text-cyan-900">Clarté, rigueur, prévention</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="lg:col-span-6">
+            <div class="reveal delay-2 rounded-3xl border border-sky-200 bg-white/70 p-6 shadow-sm overflow-hidden">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-semibold gradient-text-2">Schéma simplifié</div>
+                  <div class="text-xs text-slate-500">Flux de données : équipements → réseau → systèmes sécurisés</div>
+                </div>
+                <div class="text-xs text-slate-500">Animation lente</div>
+              </div>
+
+              <div class="mt-4">
+                <svg class="w-full h-[280px]" viewBox="0 0 740 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma animé d'un hôpital stylisé avec flux de données">
+                  <!-- Background nodes -->
+                  <g opacity="0.8">
+                    <circle class="flow-dot" cx="70" cy="55" r="4" fill="rgba(16,185,129,.7)"/>
+                    <circle class="flow-dot" style="animation-delay: .8s" cx="670" cy="70" r="4" fill="rgba(16,185,129,.7)"/>
+                    <circle class="flow-dot" style="animation-delay: 1.4s" cx="620" cy="260" r="4" fill="rgba(34,211,238,.6)"/>
+                    <circle class="flow-dot" style="animation-delay: 2s" cx="120" cy="250" r="4" fill="rgba(14,165,233,.55)"/>
+                  </g>
+
+                  <!-- Hospital -->
+                  <g>
+                    <rect x="66" y="92" width="250" height="170" rx="18" fill="rgba(16,185,129,.08)" stroke="rgba(16,185,129,.25)"/>
+                    <rect x="95" y="120" width="58" height="44" rx="10" fill="white" stroke="rgba(16,185,129,.25)"/>
+                    <rect x="170" y="120" width="58" height="44" rx="10" fill="white" stroke="rgba(16,185,129,.25)"/>
+                    <rect x="245" y="120" width="46" height="44" rx="10" fill="white" stroke="rgba(16,185,129,.25)"/>
+                    <rect x="95" y="176" width="58" height="44" rx="10" fill="white" stroke="rgba(16,185,129,.25)"/>
+                    <rect x="170" y="176" width="58" height="44" rx="10" fill="white" stroke="rgba(16,185,129,.25)"/>
+                    <rect x="245" y="176" width="46" height="44" rx="10" fill="white" stroke="rgba(16,185,129,.25)"/>
+                    <rect x="140" y="80" width="100" height="30" rx="10" fill="rgba(16,185,129,.10)" stroke="rgba(16,185,129,.35)"/>
+                    <path d="M190 86v18" stroke="rgba(16,185,129,.7)" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M181 95h18" stroke="rgba(16,185,129,.7)" stroke-width="3" stroke-linecap="round"/>
+                  </g>
+
+                  <!-- Medical devices (left-bottom) -->
+                  <g>
+                    <rect x="46" y="268" width="140" height="36" rx="12" fill="white" stroke="rgba(15,23,42,.15)"/>
+                    <path d="M65 286h30" stroke="rgba(16,185,129,.55)" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M65 296h40" stroke="rgba(34,211,238,.55)" stroke-width="3" stroke-linecap="round"/>
+                    <rect x="125" y="279" width="46" height="16" rx="8" fill="rgba(34,211,238,.18)"/>
+                    <text x="56" y="262" font-size="11" fill="rgba(71,85,105,.9)">Équipements</text>
+                  </g>
+
+                  <!-- Network / segmentation (center) -->
+                  <g>
+                    <rect x="340" y="132" width="170" height="98" rx="18" fill="rgba(34,211,238,.08)" stroke="rgba(34,211,238,.28)"/>
+                    <path d="M372 164h106" stroke="rgba(16,185,129,.45)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M372 186h72" stroke="rgba(34,211,238,.45)" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="368" cy="164" r="4" fill="rgba(16,185,129,.6)"/>
+                    <circle cx="368" cy="186" r="4" fill="rgba(34,211,238,.6)"/>
+                    <circle cx="368" cy="208" r="4" fill="rgba(14,165,233,.6)"/>
+                    <path d="M372 208h92" stroke="rgba(14,165,233,.45)" stroke-width="2" stroke-linecap="round"/>
+                    <text x="352" y="124" font-size="11" fill="rgba(71,85,105,.9)">Réseau & segmentation</text>
+                  </g>
+
+                  <!-- Secured systems (right) -->
+                  <g>
+                    <rect x="546" y="92" width="170" height="170" rx="18" fill="rgba(16,185,129,.08)" stroke="rgba(16,185,129,.28)"/>
+                    <rect x="572" y="124" width="120" height="46" rx="12" fill="white" stroke="rgba(16,185,129,.25)"/>
+                    <rect x="572" y="182" width="120" height="58" rx="12" fill="white" stroke="rgba(16,185,129,.25)"/>
+                    <path d="M634 130v10" stroke="rgba(16,185,129,.65)" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M624 140h20" stroke="rgba(16,185,129,.65)" stroke-width="3" stroke-linecap="round"/>
+                    <text x="564" y="78" font-size="11" fill="rgba(71,85,105,.9)">Systèmes sécurisés</text>
+                  </g>
+
+                  <!-- Flows -->
+                  <path class="flow-line" d="M196 268 C 250 245, 280 236, 334 222" stroke="rgba(16,185,129,.55)" stroke-width="3" stroke-linecap="round"/>
+                  <path class="flow-line" d="M316 178 C 335 178, 336 178, 340 178" stroke="rgba(34,211,238,.55)" stroke-width="3" stroke-linecap="round"/>
+                  <path class="flow-line" d="M510 182 C 532 182, 540 182, 546 182" stroke="rgba(14,165,233,.55)" stroke-width="3" stroke-linecap="round"/>
+
+                  <!-- Shield icon -->
+                  <g>
+                    <path d="M637 273c-18-6-28-18-28-34v-18l28-10 28 10v18c0 16-10 28-28 34Z" fill="rgba(16,185,129,.10)" stroke="rgba(16,185,129,.35)"/>
+                    <path d="M623 239l9 9 19-21" stroke="rgba(16,185,129,.8)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                  </g>
+                </svg>
+              </div>
+
+              <div class="mt-4 grid sm:grid-cols-3 gap-3 text-xs">
+                <div class="rounded-xl border border-emerald-200 bg-emerald-50/80 p-3">
+                  <div class="font-medium text-emerald-900">Données</div>
+                  <div class="text-emerald-700">Flux cliniques & techniques</div>
+                </div>
+                <div class="rounded-xl border border-cyan-200 bg-cyan-50/80 p-3">
+                  <div class="font-medium text-cyan-900">Surface d'exposition</div>
+                  <div class="text-cyan-700">Wi‑Fi, segmentation, interconnexions</div>
+                </div>
+                <div class="rounded-xl border border-sky-200 bg-sky-50/80 p-3">
+                  <div class="font-medium text-sky-900">Objectif</div>
+                  <div class="text-sky-700">Prévention, continuité, pédagogie</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: What is MedSec -->
+    <section id="medsec" class="py-16 sm:py-20 section-gradient-1">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-10">
+          <div class="lg:col-span-5">
+            <h2 class="reveal text-2xl sm:text-3xl font-semibold tracking-tight gradient-text-2">Qu'est-ce que MedSec ?</h2>
+            <p class="reveal delay-1 mt-4 text-slate-600 leading-relaxed">
+              MedSec est une initiative académique dédiée à l'étude des risques cyber en milieu médical, à l'analyse des réseaux hospitaliers et à la sensibilisation aux vulnérabilités techniques réelles —
+              avec une posture rigoureuse, <span class="font-semibold text-emerald-600">non accusatoire</span> et orientée <span class="font-semibold text-cyan-600">prévention</span>.
+            </p>
+
+            <ul class="reveal delay-2 mt-6 space-y-3 text-sm text-slate-700">
+              <li class="flex gap-3">
+                <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                <span><span class="font-medium">Pédagogie :</span> rendre compréhensibles des mécanismes complexes sans simplifier à l'excès.</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-cyan-500"></span>
+                <span><span class="font-medium">Méthode :</span> observation, analyse, évaluation et interprétation documentées.</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-sky-500"></span>
+                <span><span class="font-medium">Institutionnel :</span> transparence, conformité, respect du cadre légal.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="reveal delay-1 rounded-3xl border border-emerald-200 bg-white/70 p-6 shadow-sm">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-semibold gradient-text-2">Chaîne de compréhension (timeline)</div>
+                  <div class="text-xs text-slate-500">Équipements → réseau → données → risques → protections</div>
+                </div>
+                <div class="text-xs text-slate-500">Progression au scroll</div>
+              </div>
+
+              <div class="mt-6">
+                <div class="relative">
+                  <div class="h-1.5 w-full rounded-full bg-emerald-100 overflow-hidden">
+                    <div id="timelineProgress" class="progress-line h-full rounded-full bg-gradient-to-r from-emerald-500 via-cyan-400 to-sky-400"></div>
+                  </div>
+
+                  <div class="mt-6 grid sm:grid-cols-5 gap-4">
+                    <div class="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4">
+                      <div class="flex items-center gap-2">
+                        <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                        <div class="text-sm font-medium text-emerald-900">Équipements</div>
+                      </div>
+                      <div class="mt-2 text-xs text-emerald-700">IRM, scanners, monitors, IoT clinique</div>
+                    </div>
+                    <div class="rounded-2xl border border-cyan-200 bg-cyan-50/80 p-4">
+                      <div class="flex items-center gap-2">
+                        <span class="h-2.5 w-2.5 rounded-full bg-cyan-500"></span>
+                        <div class="text-sm font-medium text-cyan-900">Réseau</div>
+                      </div>
+                      <div class="mt-2 text-xs text-cyan-700">Wi‑Fi, VLAN, accès invités, interconnexions</div>
+                    </div>
+                    <div class="rounded-2xl border border-sky-200 bg-sky-50/80 p-4">
+                      <div class="flex items-center gap-2">
+                        <span class="h-2.5 w-2.5 rounded-full bg-sky-600"></span>
+                        <div class="text-sm font-medium text-sky-900">Données</div>
+                      </div>
+                      <div class="mt-2 text-xs text-sky-700">Données patient, images, logs techniques</div>
+                    </div>
+                    <div class="rounded-2xl border border-orange-200 bg-orange-50/80 p-4">
+                      <div class="flex items-center gap-2">
+                        <span class="h-2.5 w-2.5 rounded-full bg-orange-500"></span>
+                        <div class="text-sm font-medium text-orange-900">Risques</div>
+                      </div>
+                      <div class="mt-2 text-xs text-orange-700">Indisponibilité, fuite, altération, erreurs</div>
+                    </div>
+                    <div class="rounded-2xl border border-sky-200 bg-sky-50/80 p-4">
+                      <div class="flex items-center gap-2">
+                        <span class="h-2.5 w-2.5 rounded-full bg-sky-500"></span>
+                        <div class="text-sm font-medium text-sky-900">Protections</div>
+                      </div>
+                      <div class="mt-2 text-xs text-sky-700">Segmentation, supervision, durcissement, procédures</div>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="mt-6 text-xs text-slate-500">
+                  Cette timeline illustre une logique d'analyse, pas un "mode d'emploi". MedSec vise à expliquer, documenter et prévenir.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Audits process -->
+    <section id="audits" class="py-16 sm:py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <h2 class="reveal text-2xl sm:text-3xl font-semibold tracking-tight gradient-text-2">Comment fonctionnent les audits MedSec ?</h2>
+            <p class="reveal delay-1 mt-4 text-slate-600 max-w-2xl leading-relaxed">
+              Un processus en 4 étapes, conçu pour être compréhensible et crédible. L'objectif n'est pas de "pointer du doigt", mais de produire une lecture constructive et priorisée des expositions.
+            </p>
+          </div>
+          <div class="reveal delay-2 rounded-2xl border border-cyan-200 bg-cyan-50/80 p-4 text-xs text-cyan-900 max-w-md">
+            <div class="font-medium">Principe</div>
+            <div class="mt-1">Analyse non intrusive par défaut • tests intrusifs uniquement avec autorisation explicite.</div>
+          </div>
+        </div>
+
+        <div class="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Step 1 -->
+          <article class="reveal card-hover rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-semibold text-emerald-900">1. Observation</div>
+              <span class="text-xs text-emerald-700">Environnement</span>
+            </div>
+            <div class="mt-4 rounded-2xl border border-emerald-200 bg-white/80 p-4">
+              <svg viewBox="0 0 120 60" class="w-full h-14" fill="none" aria-hidden="true">
+                <path d="M10 46h36" stroke="rgba(16,185,129,.6)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M18 40c10-10 20-10 30 0" stroke="rgba(34,211,238,.7)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M12 34c14-14 28-14 42 0" stroke="rgba(14,165,233,.55)" stroke-width="3" stroke-linecap="round"/>
+                <rect x="76" y="18" width="34" height="28" rx="8" fill="rgba(16,185,129,.10)" stroke="rgba(16,185,129,.25)"/>
+                <path d="M84 26h18" stroke="rgba(71,85,105,.6)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M84 34h12" stroke="rgba(71,85,105,.55)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <div class="mt-3 text-xs text-emerald-800">
+                Wi‑Fi • segmentation • exposition des équipements
+              </div>
+            </div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-700">
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Cartographie des zones réseau</span></li>
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>Inventaire logique (non intrusif)</span></li>
+            </ul>
+          </article>
+
+          <!-- Step 2 -->
+          <article class="reveal delay-1 card-hover rounded-3xl border border-cyan-200 bg-cyan-50/70 p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-semibold text-cyan-900">2. Analyse technique</div>
+              <span class="text-xs text-cyan-700">Signaux & protocoles</span>
+            </div>
+            <div class="mt-4 rounded-2xl border border-cyan-200 bg-white/80 p-4">
+              <svg viewBox="0 0 120 60" class="w-full h-14" fill="none" aria-hidden="true">
+                <path d="M10 50h100" stroke="rgba(15,23,42,.15)" stroke-width="2"/>
+                <g>
+                  <rect x="18" y="30" width="8" height="20" rx="3" fill="rgba(16,185,129,.35)"/>
+                  <rect x="32" y="20" width="8" height="30" rx="3" fill="rgba(34,211,238,.35)"/>
+                  <rect x="46" y="12" width="8" height="38" rx="3" fill="rgba(14,165,233,.35)"/>
+                  <rect x="60" y="24" width="8" height="26" rx="3" fill="rgba(16,185,129,.28)"/>
+                  <rect x="74" y="18" width="8" height="32" rx="3" fill="rgba(34,211,238,.28)"/>
+                  <rect x="88" y="34" width="8" height="16" rx="3" fill="rgba(14,165,233,.28)"/>
+                </g>
+                <path class="flow-line" d="M12 14c22 10 40 10 62 0" stroke="rgba(16,185,129,.55)" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <div class="mt-3 text-xs text-cyan-800">
+                Protocoles • surfaces d'exposition • cohérences réseau
+              </div>
+            </div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-700">
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Lecture conceptuelle des échanges</span></li>
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>Recherche d'écarts vs bonnes pratiques</span></li>
+            </ul>
+          </article>
+
+          <!-- Step 3 -->
+          <article class="reveal delay-2 card-hover rounded-3xl border border-orange-200 bg-orange-50/70 p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-semibold text-orange-900">3. Évaluation des risques</div>
+              <span class="text-xs text-orange-700">Priorisation</span>
+            </div>
+            <div class="mt-4 rounded-2xl border border-orange-200 bg-white/80 p-4">
+              <div class="heat-sheen rounded-xl p-3">
+                <div class="grid grid-cols-6 gap-2">
+                  <div class="h-3 rounded bg-emerald-300/40"></div>
+                  <div class="h-3 rounded bg-emerald-300/30"></div>
+                  <div class="h-3 rounded bg-cyan-300/40"></div>
+                  <div class="h-3 rounded bg-sky-300/35"></div>
+                  <div class="h-3 rounded bg-orange-300/35"></div>
+                  <div class="h-3 rounded bg-rose-300/30"></div>
+
+                  <div class="h-3 rounded bg-emerald-300/25"></div>
+                  <div class="h-3 rounded bg-cyan-300/35"></div>
+                  <div class="h-3 rounded bg-sky-300/35"></div>
+                  <div class="h-3 rounded bg-orange-300/35"></div>
+                  <div class="h-3 rounded bg-rose-300/35"></div>
+                  <div class="h-3 rounded bg-rose-300/25"></div>
+                </div>
+              </div>
+              <div class="mt-3 text-xs text-orange-800">
+                Zones faibles • zones critiques • priorisation
+              </div>
+            </div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-700">
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-orange-500"></span><span>Impact sur la continuité des soins</span></li>
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Probabilité & exposition technique</span></li>
+            </ul>
+          </article>
+
+          <!-- Step 4 -->
+          <article class="reveal delay-3 rounded-3xl border border-sky-200 bg-sky-50/70 p-6 shadow-sm hover:bg-sky-50/90 transition">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-semibold text-sky-900">4. Interprétation pédagogique</div>
+              <span class="text-xs text-sky-700">Constructif</span>
+            </div>
+            <div class="mt-4 rounded-2xl border border-sky-200 bg-white/80 p-4">
+              <svg viewBox="0 0 120 60" class="w-full h-14" fill="none" aria-hidden="true">
+                <path d="M18 16h40c8 0 14 6 14 14v18H32c-8 0-14-6-14-14V16Z" fill="rgba(16,185,129,.10)" stroke="rgba(16,185,129,.25)"/>
+                <path d="M62 16h40v18c0 8-6 14-14 14H62V16Z" fill="rgba(34,211,238,.10)" stroke="rgba(34,211,238,.25)"/>
+                <path d="M36 26h20" stroke="rgba(71,85,105,.55)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M36 34h26" stroke="rgba(71,85,105,.5)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M72 26h20" stroke="rgba(71,85,105,.55)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M72 34h22" stroke="rgba(71,85,105,.5)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M58 14v38" stroke="rgba(15,23,42,.18)" stroke-width="2"/>
+              </svg>
+              <div class="mt-3 text-xs text-sky-800">
+                Pas de jugement • approche progressive • recommandations
+              </div>
+            </div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-700">
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500"></span><span>Explications, exemples, limites</span></li>
+              <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>Dialogue avec les équipes</span></li>
+            </ul>
+          </article>
+        </div>
+
+        <!-- Simulation pédagogique -->
+        <div class="mt-12 grid lg:grid-cols-12 gap-8">
+          <div class="lg:col-span-5">
+            <h3 class="reveal text-xl font-semibold gradient-text-2">Simulations pédagogiques (scénarios cyber)</h3>
+            <p class="reveal delay-1 mt-3 text-slate-600 leading-relaxed">
+              Des scénarios "type" pour comprendre les chaînes d'événements et les mesures de réduction du risque.
+              Aucun détail exploitable (pas de procédures d'attaque, pas de données d'établissement).
+            </p>
+
+            <div class="reveal delay-2 mt-6 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-5 shadow-sm">
+              <label class="text-sm font-medium text-emerald-900" for="scenarioSelect">Choisir un scénario</label>
+              <select id="scenarioSelect" class="mt-2 w-full rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm shadow-sm text-emerald-900">
+                <option value="wifi">Perturbation Wi‑Fi en zone de soins</option>
+                <option value="ransom">Indisponibilité SI (type rançongiciel)</option>
+                <option value="interop">Incident d'interopérabilité (DICOM/HL7)</option>
+                <option value="tiers">Risque via prestataire / maintenance</option>
+              </select>
+
+              <div class="mt-4 flex items-center gap-3">
+                <button id="runSim" class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-4 py-2.5 text-sm text-white shadow-sm hover:bg-emerald-700 transition-all hover:scale-105">
+                  Lancer la simulation
+                </button>
+                <button id="resetSim" class="inline-flex items-center justify-center rounded-2xl border border-emerald-300 bg-white px-4 py-2.5 text-sm text-emerald-800 shadow-sm hover:bg-emerald-50 transition-all">
+                  Réinitialiser
+                </button>
+              </div>
+
+              <div class="mt-4 text-xs text-emerald-800">
+                La simulation décrit un enchaînement conceptuel et des mesures de prévention ; elle ne remplace pas un audit.
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="reveal delay-2 rounded-3xl border border-cyan-200 bg-cyan-50/70 p-6 shadow-sm">
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <div class="text-sm font-semibold text-cyan-900">Lecture de scénario</div>
+                  <div id="simMeta" class="text-xs text-cyan-800">Sélectionnez un scénario puis lancez la simulation.</div>
+                </div>
+                <div class="hidden sm:flex items-center gap-2 text-xs text-cyan-800">
+                  <span class="inline-block h-2 w-2 rounded-full bg-emerald-400"></span>
+                  Animation progressive
+                </div>
+              </div>
+
+              <div class="mt-4 h-2 w-full rounded-full bg-emerald-100 overflow-hidden" aria-hidden="true">
+                <div id="simBar" class="h-full w-0 rounded-full bg-gradient-to-r from-emerald-500 via-cyan-400 to-sky-400 sim-progress"></div>
+              </div>
+
+              <div class="mt-6 grid gap-3" id="simSteps" aria-live="polite">
+                <!-- Steps injected by JS -->
+              </div>
+
+              <div class="mt-6 rounded-2xl border border-cyan-200 bg-white/80 p-4">
+                <div class="text-sm font-semibold text-cyan-900">Sortie pédagogique</div>
+                <ul id="simTakeaways" class="mt-2 space-y-2 text-sm text-slate-700">
+                  <li class="text-slate-500">Les points clés apparaîtront ici après la simulation.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 4: Technical bases explained -->
+    <section id="bases" class="py-16 sm:py-20 section-gradient-2">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <h2 class="reveal text-2xl sm:text-3xl font-semibold tracking-tight gradient-text-2">Bases techniques expliquées simplement</h2>
+            <p class="reveal delay-1 mt-4 text-slate-600 max-w-2xl leading-relaxed">
+              Un socle de compréhension pour étudiants, soignants, ingénieurs biomédicaux et décideurs.
+              Les risques sont décrits à un niveau conceptuel, sans détails exploitables.
+            </p>
+          </div>
+          <div class="reveal delay-2 rounded-2xl border border-cyan-200 bg-cyan-50/80 p-4 text-xs text-cyan-900">
+            <div class="font-medium">Astuce</div>
+            <div class="mt-1">Survolez les cartes : micro-schémas et définitions apparaissent.</div>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <div class="reveal grid sm:grid-cols-2 lg:grid-cols-4 gap-3" role="tablist" aria-label="Onglets des bases techniques">
+            <button data-tab="wifi" class="tabBtn rounded-2xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-left shadow-sm hover:bg-emerald-50 transition-all hover:scale-105" aria-selected="true" role="tab">
+              <div class="text-sm font-semibold text-emerald-900">Wi‑Fi hospitalier</div>
+              <div class="text-xs text-emerald-700">Pourquoi c'est critique</div>
+            </button>
+            <button data-tab="equip" class="tabBtn rounded-2xl border border-cyan-200 bg-cyan-50/70 px-4 py-3 text-left shadow-sm hover:bg-cyan-50 transition-all hover:scale-105" aria-selected="false" role="tab">
+              <div class="text-sm font-semibold text-cyan-900">Équipements connectés</div>
+              <div class="text-xs text-cyan-700">Imagerie, PACS, dispositifs</div>
+            </button>
+            <button data-tab="proto" class="tabBtn rounded-2xl border border-sky-200 bg-sky-50/70 px-4 py-3 text-left shadow-sm hover:bg-sky-50 transition-all hover:scale-105" aria-selected="false" role="tab">
+              <div class="text-sm font-semibold text-sky-900">DICOM & HL7</div>
+              <div class="text-xs text-sky-700">Interopérabilité (concept)</div>
+            </button>
+            <button data-tab="crit" class="tabBtn rounded-2xl border border-orange-200 bg-orange-50/70 px-4 py-3 text-left shadow-sm hover:bg-orange-50 transition-all hover:scale-105" aria-selected="false" role="tab">
+              <div class="text-sm font-semibold text-orange-900">Milieu critique</div>
+              <div class="text-xs text-orange-700">Continuité des soins</div>
+            </button>
+          </div>
+
+          <div class="mt-6">
+            <!-- Panel WiFi -->
+            <div id="panel-wifi" class="tabPanel reveal rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 shadow-sm" role="tabpanel">
+              <div class="grid lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-7">
+                  <h3 class="text-xl font-semibold text-emerald-900">Wi‑Fi hospitalier : bien plus qu'un réseau "pratique"</h3>
+                  <p class="mt-3 text-slate-600 leading-relaxed">
+                    Dans un hôpital, le Wi‑Fi peut supporter des usages cliniques (mobilité, traçabilité, téléphonie, accès dossier patient) avec des contraintes fortes de disponibilité et de segmentation.
+                  </p>
+                  <div class="mt-5 grid sm:grid-cols-2 gap-4">
+                    <div class="rounded-2xl border border-emerald-200 bg-white/80 p-4 hover:bg-emerald-50 transition">
+                      <div class="text-sm font-semibold text-emerald-900">Pourquoi c'est critique</div>
+                      <ul class="mt-2 space-y-2 text-sm text-slate-700">
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Mobilité en zone de soins</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>Interopérabilité d'applications</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500"></span><span>Continuité des services</span></li>
+                      </ul>
+                    </div>
+                    <div class="rounded-2xl border border-emerald-200 bg-white/80 p-4 hover:bg-emerald-50 transition">
+                      <div class="text-sm font-semibold text-emerald-900">Différences vs domestique</div>
+                      <ul class="mt-2 space-y-2 text-sm text-slate-700">
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Segmentation (patients, bioméd, invités)</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>Gestion d'identités / certificats</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500"></span><span>Supervision & conformité</span></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="mt-6 rounded-2xl border border-emerald-200 bg-white/80 p-4">
+                    <div class="text-sm font-semibold text-emerald-900">Risques potentiels (niveau conceptuel)</div>
+                    <p class="mt-2 text-sm text-slate-700">
+                      Mauvaise segmentation, configurations hétérogènes, et dépendance forte aux services : ces facteurs peuvent amplifier l'impact d'un incident (indisponibilité, dégradation, confusion de flux).
+                    </p>
+                  </div>
+                </div>
+
+                <div class="lg:col-span-5">
+                  <div class="rounded-3xl border border-emerald-200 bg-white/80 p-5 shadow-sm">
+                    <div class="text-sm font-semibold text-emerald-900">Mini schéma</div>
+                    <div class="text-xs text-emerald-700">Réseaux séparés + contrôle d'accès</div>
+                    <svg class="mt-4 w-full h-44" viewBox="0 0 220 140" fill="none" aria-hidden="true">
+                      <rect x="14" y="18" width="192" height="104" rx="18" fill="rgba(16,185,129,.06)" stroke="rgba(16,185,129,.20)"/>
+                      <rect x="28" y="34" width="62" height="34" rx="12" fill="white" stroke="rgba(16,185,129,.22)"/>
+                      <rect x="128" y="34" width="62" height="34" rx="12" fill="white" stroke="rgba(34,211,238,.22)"/>
+                      <rect x="28" y="78" width="62" height="30" rx="12" fill="white" stroke="rgba(14,165,233,.22)"/>
+                      <rect x="128" y="78" width="62" height="30" rx="12" fill="white" stroke="rgba(15,23,42,.16)"/>
+                      <path class="flow-line" d="M90 51h38" stroke="rgba(16,185,129,.55)" stroke-width="3" stroke-linecap="round"/>
+                      <path class="flow-line" d="M90 94h38" stroke="rgba(34,211,238,.55)" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="110" cy="51" r="6" fill="rgba(34,211,238,.18)" stroke="rgba(34,211,238,.35)"/>
+                      <circle cx="110" cy="94" r="6" fill="rgba(14,165,233,.16)" stroke="rgba(14,165,233,.35)"/>
+                      <text x="33" y="54" font-size="10" fill="rgba(71,85,105,.9)">Soins</text>
+                      <text x="134" y="54" font-size="10" fill="rgba(71,85,105,.9)">Bioméd</text>
+                      <text x="33" y="97" font-size="10" fill="rgba(71,85,105,.9)">Invités</text>
+                      <text x="134" y="97" font-size="10" fill="rgba(71,85,105,.9)">SI</text>
+                    </svg>
+                    <p class="mt-3 text-xs text-slate-500">Un même Wi‑Fi peut héberger plusieurs réseaux logiques (VLAN/SSID), avec contrôle d'accès et règles de circulation.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel Equipments -->
+            <div id="panel-equip" class="tabPanel hidden rounded-3xl border border-cyan-200 bg-cyan-50/70 p-6 shadow-sm" role="tabpanel">
+              <div class="grid lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-7">
+                  <h3 class="text-xl font-semibold text-cyan-900">Équipements médicaux connectés : sensibilité clinique + contrainte industrielle</h3>
+                  <p class="mt-3 text-slate-600 leading-relaxed">
+                    Les équipements (imagerie, PACS, dispositifs au lit du patient) ont des cycles de vie longs, des contraintes de certification et des dépendances logicielles.
+                    La sécurité doit composer avec la disponibilité et la sûreté de fonctionnement.
+                  </p>
+
+                  <div class="mt-5 grid sm:grid-cols-2 gap-4">
+                    <div class="rounded-2xl border border-cyan-200 bg-white/80 p-4 hover:bg-cyan-50 transition">
+                      <div class="text-sm font-semibold text-cyan-900">Exemples</div>
+                      <ul class="mt-2 space-y-2 text-sm text-slate-700">
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Scanner, IRM, échographie</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>PACS / stations de lecture</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500"></span><span>Moniteurs, pompes, capteurs</span></li>
+                      </ul>
+                    </div>
+                    <div class="rounded-2xl border border-cyan-200 bg-white/80 p-4 hover:bg-cyan-50 transition">
+                      <div class="text-sm font-semibold text-cyan-900">Pourquoi c'est sensible</div>
+                      <ul class="mt-2 space-y-2 text-sm text-slate-700">
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500"></span><span>Impact direct sur le soin</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Mises à jour encadrées</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>Dépendances fournisseurs</span></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="mt-6 rounded-2xl border border-cyan-200 bg-white/80 p-4">
+                    <div class="text-sm font-semibold text-cyan-900">Risques potentiels (niveau conceptuel)</div>
+                    <p class="mt-2 text-sm text-slate-700">
+                      Expositions réseau non nécessaires, configurations héritées, et manque de séparation entre environnements (soins/administratif). MedSec privilégie une lecture "réduction d'exposition" et une priorisation compatible avec le terrain.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="lg:col-span-5">
+                  <div class="rounded-3xl border border-cyan-200 bg-white/80 p-5 shadow-sm">
+                    <div class="text-sm font-semibold text-cyan-900">Mini schéma</div>
+                    <div class="text-xs text-cyan-700">Imagerie → PACS → stations</div>
+                    <svg class="mt-4 w-full h-44" viewBox="0 0 240 140" fill="none" aria-hidden="true">
+                      <rect x="18" y="22" width="68" height="38" rx="14" fill="white" stroke="rgba(16,185,129,.25)"/>
+                      <rect x="92" y="54" width="64" height="46" rx="16" fill="white" stroke="rgba(34,211,238,.25)"/>
+                      <rect x="162" y="28" width="60" height="34" rx="14" fill="white" stroke="rgba(14,165,233,.25)"/>
+                      <rect x="162" y="72" width="60" height="34" rx="14" fill="white" stroke="rgba(15,23,42,.16)"/>
+                      <path class="flow-line" d="M86 44C96 52 100 58 108 64" stroke="rgba(16,185,129,.55)" stroke-width="3" stroke-linecap="round"/>
+                      <path class="flow-line" d="M156 74C164 66 170 60 176 54" stroke="rgba(34,211,238,.55)" stroke-width="3" stroke-linecap="round"/>
+                      <path class="flow-line" d="M156 88h6c8 0 10 0 12 0" stroke="rgba(14,165,233,.55)" stroke-width="3" stroke-linecap="round"/>
+                      <text x="30" y="46" font-size="10" fill="rgba(71,85,105,.9)">Scanner/IRM</text>
+                      <text x="108" y="80" font-size="10" fill="rgba(71,85,105,.9)">PACS</text>
+                      <text x="172" y="48" font-size="10" fill="rgba(71,85,105,.9)">Station</text>
+                      <text x="175" y="92" font-size="10" fill="rgba(71,85,105,.9)">Archive</text>
+                    </svg>
+                    <p class="mt-3 text-xs text-slate-500">La chaîne d'imagerie implique plusieurs systèmes. La sécurité vise à réduire les circulations inutiles et à surveiller les points critiques.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel Protocols -->
+            <div id="panel-proto" class="tabPanel hidden rounded-3xl border border-sky-200 bg-sky-50/70 p-6 shadow-sm" role="tabpanel">
+              <div class="grid lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-7">
+                  <h3 class="text-xl font-semibold text-sky-900">Protocoles médicaux (DICOM, HL7) : la circulation clinique</h3>
+                  <p class="mt-3 text-slate-600 leading-relaxed">
+                    DICOM et HL7 structurent l'échange d'images et d'informations médicales entre systèmes.
+                    L'enjeu sécurité consiste à garantir la confidentialité, l'intégrité et la disponibilité, tout en préservant l'efficacité clinique.
+                  </p>
+
+                  <div class="mt-5 grid sm:grid-cols-2 gap-4">
+                    <div class="rounded-2xl border border-sky-200 bg-white/80 p-4 hover:bg-sky-50 transition">
+                      <div class="text-sm font-semibold text-sky-900">Rôle (concept)</div>
+                      <ul class="mt-2 space-y-2 text-sm text-slate-700">
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Interopérabilité entre logiciels</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>Traçabilité d'objets cliniques</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500"></span><span>Flux continus (examens, résultats)</span></li>
+                      </ul>
+                    </div>
+                    <div class="rounded-2xl border border-sky-200 bg-white/80 p-4 hover:bg-sky-50 transition">
+                      <div class="text-sm font-semibold text-sky-900">Risques potentiels (sans détails)</div>
+                      <ul class="mt-2 space-y-2 text-sm text-slate-700">
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-orange-500"></span><span>Exposition involontaire de services</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Erreurs de routage / interconnexions</span></li>
+                        <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500"></span><span>Confusion d'identité des flux</span></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="mt-6 rounded-2xl border border-sky-200 bg-white/80 p-4">
+                    <div class="text-sm font-semibold text-sky-900">Approche recommandée</div>
+                    <p class="mt-2 text-sm text-slate-700">
+                      Documenter les flux attendus, segmenter selon les besoins cliniques, et surveiller les écarts. L'objectif : réduire l'exposition sans bloquer les soins.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="lg:col-span-5">
+                  <div class="rounded-3xl border border-sky-200 bg-white/80 p-5 shadow-sm">
+                    <div class="text-sm font-semibold text-sky-900">Mini schéma</div>
+                    <div class="text-xs text-sky-700">Messages cliniques entre systèmes</div>
+                    <svg class="mt-4 w-full h-44" viewBox="0 0 240 140" fill="none" aria-hidden="true">
+                      <rect x="18" y="26" width="78" height="34" rx="14" fill="white" stroke="rgba(16,185,129,.25)"/>
+                      <rect x="144" y="26" width="78" height="34" rx="14" fill="white" stroke="rgba(34,211,238,.25)"/>
+                      <rect x="82" y="80" width="76" height="36" rx="16" fill="white" stroke="rgba(14,165,233,.25)"/>
+                      <path class="flow-line" d="M96 43h48" stroke="rgba(16,185,129,.55)" stroke-width="3" stroke-linecap="round"/>
+                      <path class="flow-line" d="M72 60c22 16 36 26 48 32" stroke="rgba(34,211,238,.55)" stroke-width="3" stroke-linecap="round"/>
+                      <path class="flow-line" d="M170 60c-22 16-36 26-50 32" stroke="rgba(14,165,233,.55)" stroke-width="3" stroke-linecap="round"/>
+                      <text x="30" y="48" font-size="10" fill="rgba(71,85,105,.9)">RIS / SIH</text>
+                      <text x="156" y="48" font-size="10" fill="rgba(71,85,105,.9)">PACS</text>
+                      <text x="92" y="103" font-size="10" fill="rgba(71,85,105,.9)">Interop</text>
+                    </svg>
+                    <p class="mt-3 text-xs text-slate-500">Les flux cliniques doivent être attendus, documentés et contrôlés. La sécurité s'inscrit dans la gouvernance des échanges.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel Critical -->
+            <div id="panel-crit" class="tabPanel hidden rounded-3xl border border-orange-200 bg-orange-50/70 p-6 shadow-sm" role="tabpanel">
+              <div class="grid lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-7">
+                  <h3 class="text-xl font-semibold text-orange-900">Cybersécurité en milieu critique : sécurité ≠ blocage</h3>
+                  <p class="mt-3 text-slate-600 leading-relaxed">
+                    En santé, l'enjeu principal est la continuité des soins. Une mesure "parfaite" sur le papier peut être contre-productive si elle dégrade l'accès clinique.
+                    MedSec privilégie une approche proportionnée : réduire l'exposition, améliorer la détection, et préparer la réponse.
+                  </p>
+
+                  <div class="mt-5 grid sm:grid-cols-2 gap-4">
+                    <div class="rounded-2xl border border-orange-200 bg-white/80 p-4 hover:bg-orange-50 transition">
+                      <div class="text-sm font-semibold text-orange-900">Continuité</div>
+                      <p class="mt-2 text-sm text-slate-700">Plans de secours, procédures, redondances, priorisation des services cliniques.</p>
+                    </div>
+                    <div class="rounded-2xl border border-orange-200 bg-white/80 p-4 hover:bg-orange-50 transition">
+                      <div class="text-sm font-semibold text-orange-900">Sécurité opérationnelle</div>
+                      <p class="mt-2 text-sm text-slate-700">Durcissement, segmentation, supervision, gestion des accès et des comptes.</p>
+                    </div>
+                  </div>
+
+                  <div class="mt-6 rounded-2xl border border-orange-200 bg-white/80 p-4">
+                    <div class="text-sm font-semibold text-orange-900">Message clé</div>
+                    <p class="mt-2 text-sm text-slate-700">
+                      L'objectif n'est pas "zéro risque" mais un niveau maîtrisé et documenté, cohérent avec les contraintes médicales et réglementaires.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="lg:col-span-5">
+                  <div class="rounded-3xl border border-orange-200 bg-white/80 p-5 shadow-sm">
+                    <div class="text-sm font-semibold text-orange-900">Mini schéma</div>
+                    <div class="text-xs text-orange-700">Disponibilité + sécurité</div>
+                    <svg class="mt-4 w-full h-44" viewBox="0 0 240 140" fill="none" aria-hidden="true">
+                      <path d="M30 98c20-28 42-46 66-54 22-8 48-6 78 6 18 7 28 14 36 22" stroke="rgba(16,185,129,.25)" stroke-width="10" stroke-linecap="round"/>
+                      <path d="M30 98c20-28 42-46 66-54 22-8 48-6 78 6 18 7 28 14 36 22" stroke="rgba(34,211,238,.35)" stroke-width="6" stroke-linecap="round"/>
+                      <circle cx="62" cy="70" r="10" fill="rgba(34,211,238,.18)" stroke="rgba(34,211,238,.35)"/>
+                      <circle cx="128" cy="56" r="10" fill="rgba(16,185,129,.14)" stroke="rgba(16,185,129,.35)"/>
+                      <circle cx="192" cy="74" r="10" fill="rgba(14,165,233,.14)" stroke="rgba(14,165,233,.35)"/>
+                      <text x="48" y="124" font-size="10" fill="rgba(71,85,105,.9)">Procédures</text>
+                      <text x="104" y="124" font-size="10" fill="rgba(71,85,105,.9)">Technique</text>
+                      <text x="176" y="124" font-size="10" fill="rgba(71,85,105,.9)">Terrain</text>
+                    </svg>
+                    <p class="mt-3 text-xs text-slate-500">Les mesures efficaces sont celles qui tiennent dans la durée, au plus près des usages cliniques.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Key figures -->
+    <section id="chiffres" class="py-16 sm:py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <h2 class="reveal text-2xl sm:text-3xl font-semibold tracking-tight gradient-text-2">Chiffres clés (data-driven)</h2>
+            <p class="reveal delay-1 mt-4 text-slate-600 max-w-2xl leading-relaxed">
+              Indicateurs présentés à titre pédagogique, issus de tendances régulièrement documentées dans des rapports publics (ANSSI, CERT-FR, publications sectorielles).
+              Les valeurs ci-dessous sont des ordres de grandeur, non attribués à un établissement.
+            </p>
+          </div>
+          <div class="reveal delay-2 rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4 text-xs text-emerald-900">
+            <div class="font-medium">Transparence</div>
+            <div class="mt-1">Aucun établissement n'est nommé ni évalué individuellement.</div>
+          </div>
+        </div>
+
+        <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="reveal rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 shadow-sm">
+            <div class="text-xs text-emerald-800">Établissements touchés (≥ 1 incident / période)</div>
+            <div class="mt-3 flex items-end gap-2">
+              <div class="counter text-4xl font-semibold tracking-tight text-emerald-900" data-target="72" data-suffix="%">0%</div>
+              <div class="text-sm text-emerald-700 pb-1">(≈)</div>
+            </div>
+            <div class="mt-2 text-sm text-slate-700">Tendance observée dans des rapports publics</div>
+          </div>
+          <div class="reveal delay-1 rounded-3xl border border-cyan-200 bg-cyan-50/70 p-6 shadow-sm">
+            <div class="text-xs text-cyan-800">Augmentation annuelle des incidents (ordre de grandeur)</div>
+            <div class="mt-3 flex items-end gap-2">
+              <div class="counter text-4xl font-semibold tracking-tight text-cyan-900" data-target="35" data-prefix="+" data-suffix="%">0%</div>
+              <div class="text-sm text-cyan-700 pb-1">(≈)</div>
+            </div>
+            <div class="mt-2 text-sm text-slate-700">Croissance portée par la numérisation</div>
+          </div>
+          <div class="reveal delay-2 rounded-3xl border border-sky-200 bg-sky-50/70 p-6 shadow-sm">
+            <div class="text-xs text-sky-800">Part d'incidents impliquant le réseau / accès</div>
+            <div class="mt-3 flex items-end gap-2">
+              <div class="counter text-4xl font-semibold tracking-tight text-sky-900" data-target="42" data-suffix="%">0%</div>
+              <div class="text-sm text-sky-700 pb-1">(≈)</div>
+            </div>
+            <div class="mt-2 text-sm text-slate-700">Segmentation & supervision : leviers clés</div>
+          </div>
+          <div class="reveal delay-3 rounded-3xl border border-orange-200 bg-orange-50/70 p-6 shadow-sm">
+            <div class="text-xs text-orange-800">Durée moyenne d'indisponibilité après incident</div>
+            <div class="mt-3 flex items-end gap-2">
+              <div class="counter text-4xl font-semibold tracking-tight text-orange-900" data-target="14" data-suffix=" jours">0 jours</div>
+              <div class="text-sm text-orange-700 pb-1">(≈)</div>
+            </div>
+            <div class="mt-2 text-sm text-slate-700">Dépendances, restauration, coordination</div>
+          </div>
+        </div>
+
+        <div class="mt-8 reveal delay-1 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 shadow-sm">
+          <div class="text-sm font-semibold text-emerald-900">Sources publiques (exemples)</div>
+          <div class="mt-3 grid md:grid-cols-3 gap-3 text-sm">
+            <a class="rounded-2xl border border-emerald-200 bg-white/80 p-4 hover:bg-emerald-50 transition resource-card" href="https://www.cert.ssi.gouv.fr/" target="_blank" rel="noreferrer">
+              <div class="font-medium text-emerald-900">CERT-FR</div>
+              <div class="text-xs text-emerald-700 mt-1">Alertes, bulletins, retours d'expérience</div>
+            </a>
+            <a class="rounded-2xl border border-emerald-200 bg-white/80 p-4 hover:bg-emerald-50 transition resource-card" href="https://www.ssi.gouv.fr/" target="_blank" rel="noreferrer">
+              <div class="font-medium text-emerald-900">ANSSI</div>
+              <div class="text-xs text-emerald-700 mt-1">Guides, rapports, recommandations</div>
+            </a>
+            <a class="rounded-2xl border border-emerald-200 bg-white/80 p-4 hover:bg-emerald-50 transition resource-card" href="https://cyber.gouv.fr/" target="_blank" rel="noreferrer">
+              <div class="font-medium text-emerald-900">cyber.gouv.fr</div>
+              <div class="text-xs text-emerald-700 mt-1">Ressources institutionnelles France</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Bibliothèque de ressources enrichie -->
+    <section id="ressources" class="py-16 sm:py-20 section-gradient-3">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <h2 class="reveal text-2xl sm:text-3xl font-semibold tracking-tight gradient-text-2">Bibliothèque de ressources & études de cas</h2>
+            <p class="reveal delay-1 mt-4 text-slate-600 max-w-3xl leading-relaxed">
+              Une sélection de références publiques et d'études de cas <span class="font-semibold text-emerald-600">anonymisées</span> pour approfondir les enjeux de la cybersécurité hospitalière.
+              <br><span class="text-xs text-slate-500">Ces ressources sont à vocation pédagogique et ne constituent pas un audit.</span>
+            </p>
+          </div>
+          <div class="reveal delay-2 rounded-2xl border border-cyan-200 bg-cyan-50/80 p-4 text-xs text-cyan-900">
+            <div class="font-medium">Fonctionnalité</div>
+            <div class="mt-1">Cliquez sur une fiche pour voir le contenu complet avec animation.</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="reveal delay-1 mt-8 flex flex-wrap gap-2">
+          <button class="resource-filter active rounded-full border border-emerald-300 bg-emerald-600 px-4 py-2 text-xs font-medium text-white shadow-sm hover:bg-emerald-700 transition" data-filter="all">Tous</button>
+          <button class="resource-filter rounded-full border border-emerald-200 bg-white px-4 py-2 text-xs font-medium text-emerald-700 shadow-sm hover:bg-emerald-50 transition" data-filter="wifi">Wi‑Fi</button>
+          <button class="resource-filter rounded-full border border-cyan-200 bg-white px-4 py-2 text-xs font-medium text-cyan-700 shadow-sm hover:bg-cyan-50 transition" data-filter="equip">Équipements</button>
+          <button class="resource-filter rounded-full border border-sky-200 bg-white px-4 py-2 text-xs font-medium text-sky-700 shadow-sm hover:bg-sky-50 transition" data-filter="proto">Protocoles</button>
+          <button class="resource-filter rounded-full border border-orange-200 bg-white px-4 py-2 text-xs font-medium text-orange-700 shadow-sm hover:bg-orange-50 transition" data-filter="crit">Milieu critique</button>
+          <button class="resource-filter rounded-full border border-rose-200 bg-white px-4 py-2 text-xs font-medium text-rose-700 shadow-sm hover:bg-rose-50 transition" data-filter="formations">Formations</button>
+        </div>
+
+        <!-- Resource Cards (clickable) -->
+        <div class="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4" id="resourceGrid">
+          <!-- Wi‑Fi -->
+          <article data-cat="wifi" data-title="Wi‑Fi hospitalier : segmentation et contrôle d'accès" data-meta="Fiche pédagogique • 8 min" data-desc="Comprendre la séparation des réseaux (patients, bioméd, invités) et l'importance des certificats." data-badges="Réseau,Wi‑Fi" data-content="Ce document explique comment structurer un Wi‑Fi hospitalier avec plusieurs SSID (patients, biomédical, invités), l'importance des certificats 802.1X, et la nécessité d'une supervision continue. Il aborde les différences avec un Wi‑Fi domestique et les risques de mauvaise segmentation." class="resource-card rounded-2xl border border-emerald-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-emerald-900">Wi‑Fi hospitalier : segmentation et contrôle d'accès</div>
+            <div class="mt-2 text-xs text-emerald-700">Fiche pédagogique • 8 min</div>
+            <p class="mt-3 text-sm text-slate-700">Comprendre la séparation des réseaux (patients, bioméd, invités) et l'importance des certificats.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs text-emerald-700">Réseau</span>
+              <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs text-emerald-700">Wi‑Fi</span>
+            </div>
+          </article>
+
+          <article data-cat="wifi" data-title="Gestion des identités en milieu hospitalier" data-meta="Étude de cas • 12 min" data-desc="MFA, comptes nominatifs, accès temporaires et journalisation. Une approche terrain." data-badges="Authentification,Gouvernance" data-content="Les identités et accès sont critiques. Ce texte présente une approche terrain : MFA pour les administrateurs, comptes nominatifs obligatoires, accès temporaires pour les prestataires, et journalisation fine. L'objectif : tracer qui fait quoi, quand, et pourquoi, sans ralentir les soins." class="resource-card rounded-2xl border border-emerald-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-emerald-900">Gestion des identités en milieu hospitalier</div>
+            <div class="mt-2 text-xs text-emerald-700">Étude de cas • 12 min</div>
+            <p class="mt-3 text-sm text-slate-700">MFA, comptes nominatifs, accès temporaires et journalisation. Une approche terrain.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs text-emerald-700">Authentification</span>
+              <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs text-emerald-700">Gouvernance</span>
+            </div>
+          </article>
+
+          <!-- Équipements -->
+          <article data-cat="equip" data-title="Imagerie médicale et sécurité des flux" data-meta="Fiche pédagogique • 10 min" data-desc="Chaîne d'imagerie : scanner → PACS → stations. Réduire les circulations inutiles." data-badges="PACS,Imagerie" data-content="La chaîne d'imagerie (scanner, IRM, PACS, stations) implique plusieurs systèmes. Ce guide explique comment réduire les circulations de données inutiles, segmenter les VLANs dédiés, et superviser les flux DICOM. Il souligne l'importance de la traçabilité et de la cohérence des configurations." class="resource-card rounded-2xl border border-cyan-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-cyan-900">Imagerie médicale et sécurité des flux</div>
+            <div class="mt-2 text-xs text-cyan-700">Fiche pédagogique • 10 min</div>
+            <p class="mt-3 text-sm text-slate-700">Chaîne d'imagerie : scanner → PACS → stations. Réduire les circulations inutiles.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-cyan-100 px-2 py-1 text-xs text-cyan-700">PACS</span>
+              <span class="inline-flex items-center rounded-full bg-cyan-100 px-2 py-1 text-xs text-cyan-700">Imagerie</span>
+            </div>
+          </article>
+
+          <article data-cat="equip" data-title="Cycles de vie et contraintes de mise à jour" data-meta="Étude de cas • 9 min" data-desc="Pourquoi les mises à jour sont encadrées et comment sécuriser sans interrompre." data-badges="Maintenance,Certifications" data-content="Les équipements médicaux ont des cycles de vie longs et des certifications strictes. Ce texte explique pourquoi les mises à jour sont encadrées, comment planifier des fenêtres de maintenance, et comment compenser par des mesures de sécurité complémentaires (segmentation, supervision) pendant les périodes de transition." class="resource-card rounded-2xl border border-cyan-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-cyan-900">Cycles de vie et contraintes de mise à jour</div>
+            <div class="mt-2 text-xs text-cyan-700">Étude de cas • 9 min</div>
+            <p class="mt-3 text-sm text-slate-700">Pourquoi les mises à jour sont encadrées et comment sécuriser sans interrompre.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-cyan-100 px-2 py-1 text-xs text-cyan-700">Maintenance</span>
+              <span class="inline-flex items-center rounded-full bg-cyan-100 px-2 py-1 text-xs text-cyan-700">Certifications</span>
+            </div>
+          </article>
+
+          <!-- Protocoles -->
+          <article data-cat="proto" data-title="DICOM & HL7 : flux et gouvernance" data-meta="Fiche pédagogique • 11 min" data-desc="Documenter les flux attendus, surveiller les écarts, réduire l'exposition." data-badges="Interopérabilité,Traçabilité" data-content="DICOM et HL7 sont les langages de l'imagerie et du dossier patient. Ce document explique comment cartographier les flux attendus, définir des règles de circulation, et surveiller les écarts. Il souligne que la sécurité passe par la maîtrise de la gouvernance des échanges, pas par le blocage." class="resource-card rounded-2xl border border-sky-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-sky-900">DICOM & HL7 : flux et gouvernance</div>
+            <div class="mt-2 text-xs text-sky-700">Fiche pédagogique • 11 min</div>
+            <p class="mt-3 text-sm text-slate-700">Documenter les flux attendus, surveiller les écarts, réduire l'exposition.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-sky-100 px-2 py-1 text-xs text-sky-700">Interopérabilité</span>
+              <span class="inline-flex items-center rounded-full bg-sky-100 px-2 py-1 text-xs text-sky-700">Traçabilité</span>
+            </div>
+          </article>
+
+          <article data-cat="proto" data-title="Routage et contrôle des interconnexions" data-meta="Étude de cas • 13 min" data-desc="Identifier les points de jonction et maîtriser les règles de circulation." data-badges="Routage,Segmentation" data-content="Les interconnexions entre systèmes (SIH, PACS, laboratoires) sont des points de vigilance. Ce texte propose une méthode pour identifier les points de jonction, définir des règles de routage claires, et segmenter les flux. L'objectif : maîtriser la circulation sans créer de silos inutiles." class="resource-card rounded-2xl border border-sky-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-sky-900">Routage et contrôle des interconnexions</div>
+            <div class="mt-2 text-xs text-sky-700">Étude de cas • 13 min</div>
+            <p class="mt-3 text-sm text-slate-700">Identifier les points de jonction et maîtriser les règles de circulation.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-sky-100 px-2 py-1 text-xs text-sky-700">Routage</span>
+              <span class="inline-flex items-center rounded-full bg-sky-100 px-2 py-1 text-xs text-sky-700">Segmentation</span>
+            </div>
+          </article>
+
+          <!-- Milieu critique -->
+          <article data-cat="crit" data-title="Continuité des soins : plans et procédures" data-meta="Fiche pédagogique • 10 min" data-desc="Préparation, redondances, bascule en mode dégradé et exercices de crise." data-badges="RTO/RPO,Exercices" data-content="La continuité des soins est l'enjeu majeur. Ce document explique comment préparer des plans de secours, définir des objectifs de temps de récupération (RTO) et de point de récupération (RPO), et mener des exercices de crise. Il insiste sur la complémentarité des redondances techniques et des procédures humaines." class="resource-card rounded-2xl border border-orange-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-orange-900">Continuité des soins : plans et procédures</div>
+            <div class="mt-2 text-xs text-orange-700">Fiche pédagogique • 10 min</div>
+            <p class="mt-3 text-sm text-slate-700">Préparation, redondances, bascule en mode dégradé et exercices de crise.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-700">RTO/RPO</span>
+              <span class="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-700">Exercices</span>
+            </div>
+          </article>
+
+          <article data-cat="crit" data-title="Supervision et détection d'écarts" data-meta="Étude de cas • 12 min" data-desc="Alertes, journaux, supervision : distinguer incident technique et cyber." data-badges="SIEM,Journaux" data-content="Superviser, c'est distinguer le bruit du signal. Ce texte explique comment configurer des alertes pertinentes, centraliser les journaux, et interpréter les écarts. Il souligne que la supervision aide à différencier un incident technique (panne) d'un incident cyber (anomalie)." class="resource-card rounded-2xl border border-orange-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-orange-900">Supervision et détection d'écarts</div>
+            <div class="mt-2 text-xs text-orange-700">Étude de cas • 12 min</div>
+            <p class="mt-3 text-sm text-slate-700">Alertes, journaux, supervision : distinguer incident technique et cyber.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-700">SIEM</span>
+              <span class="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-700">Journaux</span>
+            </div>
+          </article>
+
+          <!-- Formations (spécial pour les audits) -->
+          <article data-cat="formations" data-title="Bootcamp post-audit : Wi‑Fi sécurisé" data-meta="Formation • 2 jours" data-desc="Pour les équipes ayant bénéficié d'un audit. Mise en pratique et bonnes pratiques." data-badges="Bootcamp,Post-audit" data-content="Ce bootcamp de 2 jours est conçu pour les équipes ayant bénéficié d'un audit. Il combine mise en pratique (configurations Wi‑Fi, segmentation, supervision) et ateliers pédagogiques. Objectif : transformer les recommandations en actions concrètes et durables." class="resource-card rounded-2xl border border-rose-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-rose-900">Bootcamp post-audit : Wi‑Fi sécurisé</div>
+            <div class="mt-2 text-xs text-rose-700">Formation • 2 jours</div>
+            <p class="mt-3 text-sm text-slate-700">Pour les équipes ayant bénéficié d'un audit. Mise en pratique et bonnes pratiques.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-rose-100 px-2 py-1 text-xs text-rose-700">Bootcamp</span>
+              <span class="inline-flex items-center rounded-full bg-rose-100 px-2 py-1 text-xs text-rose-700">Post-audit</span>
+            </div>
+          </article>
+
+          <article data-cat="formations" data-title="Formation en ligne : bases de la cybersécurité hospitalière" data-meta="MOOC • 6 modules" data-desc="Accessible aux professionnels de santé et étudiants. Pragmatique et sans jargon." data-badges="En ligne,Pédagogie" data-content="Un MOOC de 6 modules conçu pour les professionnels de santé et étudiants. Chaque module combine vidéos courtes, quiz et études de cas anonymisées. Pas de jargon technique, mais des explications claires et pragmatiques sur les risques et les protections." class="resource-card rounded-2xl border border-rose-200 bg-white/80 p-5 shadow-sm cursor-pointer">
+            <div class="text-sm font-semibold text-rose-900">Formation en ligne : bases de la cybersécurité hospitalière</div>
+            <div class="mt-2 text-xs text-rose-700">MOOC • 6 modules</div>
+            <p class="mt-3 text-sm text-slate-700">Accessible aux professionnels de santé et étudiants. Pragmatique et sans jargon.</p>
+            <div class="mt-4 flex gap-2">
+              <span class="inline-flex items-center rounded-full bg-rose-100 px-2 py-1 text-xs text-rose-700">En ligne</span>
+              <span class="inline-flex items-center rounded-full bg-rose-100 px-2 py-1 text-xs text-rose-700">Pédagogie</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Warning -->
+        <div class="reveal delay-2 mt-8 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-xs text-amber-900">
+          <div class="font-semibold">Avertissement</div>
+          <div class="mt-1">Les études de cas sont anonymisées et à vocation pédagogique. Elles ne constituent pas un audit réel.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: Ethics -->
+    <section id="ethique" class="py-16 sm:py-20 section-gradient-4">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-10">
+          <div class="lg:col-span-5">
+            <h2 class="reveal text-2xl sm:text-3xl font-semibold tracking-tight gradient-text-2">Approche éthique et académique</h2>
+            <p class="reveal delay-1 mt-4 text-slate-600 leading-relaxed">
+              MedSec s'inscrit dans une culture de la conformité, du respect des cadres légaux et du dialogue avec les acteurs hospitaliers.
+              La cybersécurité en santé se construit avec les équipes, pas contre elles.
+            </p>
+          </div>
+          <div class="lg:col-span-7">
+            <div class="reveal delay-2 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 shadow-sm">
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div class="rounded-2xl border border-emerald-200 bg-white/80 p-5">
+                  <div class="text-sm font-semibold text-emerald-900">Cadre légal</div>
+                  <p class="mt-2 text-sm text-slate-700">Aucun test intrusif sans autorisation explicite. Prise en compte des obligations (données, conformité, traçabilité).</p>
+                </div>
+                <div class="rounded-2xl border border-emerald-200 bg-white/80 p-5">
+                  <div class="text-sm font-semibold text-emerald-900">Transparence</div>
+                  <p class="mt-2 text-sm text-slate-700">Méthodes explicitées, limites annoncées, interprétations prudentes. Pas de "scoring public" d'établissements.</p>
+                </div>
+                <div class="rounded-2xl border border-emerald-200 bg-white/80 p-5">
+                  <div class="text-sm font-semibold text-emerald-900">Priorité à la prévention</div>
+                  <p class="mt-2 text-sm text-slate-700">Sensibilisation, compréhension des flux, réduction d'exposition, préparation à l'incident.</p>
+                </div>
+                <div class="rounded-2xl border border-emerald-200 bg-white/80 p-5">
+                  <div class="text-sm font-semibold text-emerald-900">Complémentarité</div>
+                  <p class="mt-2 text-sm text-slate-700">Approche complémentaire aux équipes IT/SSI/biomédical, et aux politiques institutionnelles.</p>
+                </div>
+              </div>
+
+              <div class="mt-6 rounded-2xl border border-emerald-200 bg-white/80 p-5">
+                <div class="text-sm font-semibold text-emerald-900">Positionnement</div>
+                <p class="mt-2 text-sm text-slate-700">
+                  MedSec est conçu pour un contexte académique (formation, recherche appliquée, documentation) : il vise à améliorer la compréhension et à favoriser le dialogue entre disciplines.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 8: À propos (nouvelle) -->
+    <section id="a-propos" class="py-16 sm:py-20 section-gradient-5">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-10">
+          <div class="lg:col-span-7">
+            <h2 class="reveal text-2xl sm:text-3xl font-semibold tracking-tight gradient-text-2">À propos de MedSec</h2>
+            <p class="reveal delay-1 mt-4 text-slate-600 leading-relaxed">
+              MedSec est une <span class="font-semibold text-emerald-600">entreprise réelle</span>, fondée et dirigée par <span class="font-semibold text-cyan-600">Elias EPHREM BOUSTANY</span>, étudiant en licence de physique.
+            </p>
+            <p class="reveal delay-2 mt-3 text-slate-600 leading-relaxed">
+              Elle propose des <span class="font-semibold text-emerald-600">audits de cybersécurité</span> pour des <span class="font-semibold text-cyan-600">CHU, laboratoires et cliniques</span>, ainsi que des <span class="font-semibold text-sky-600">formations en ligne et des bootcamps</span> destinés aux équipes ayant bénéficié d'un audit.
+            </p>
+
+            <div class="reveal delay-3 mt-6 grid sm:grid-cols-2 gap-4">
+              <div class="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-5">
+                <div class="text-sm font-semibold text-emerald-900">Audits</div>
+                <ul class="mt-2 space-y-1 text-sm text-slate-700">
+                  <li>• CHU</li>
+                  <li>• Laboratoires</li>
+                  <li>• Cliniques</li>
+                </ul>
+              </div>
+              <div class="rounded-2xl border border-sky-200 bg-sky-50/80 p-5">
+                <div class="text-sm font-semibold text-sky-900">Formations</div>
+                <ul class="mt-2 space-y-1 text-sm text-slate-700">
+                  <li>• En ligne (MOOC)</li>
+                  <li>• Bootcamps post-audit</li>
+                  <li>• Sessions sur mesure</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="reveal delay-3 mt-6 rounded-2xl border border-cyan-200 bg-cyan-50/80 p-5">
+              <div class="text-sm font-semibold text-cyan-900">Contact professionnel</div>
+              <div class="mt-2 text-sm text-slate-700">
+                Pour en savoir plus sur les services d'audit ou les formations, utilisez le formulaire de contact ci-dessous.
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="reveal delay-2 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 shadow-sm">
+              <div class="text-sm font-semibold text-emerald-900">Mentions légales</div>
+              <ul class="mt-3 space-y-2 text-sm text-slate-700">
+                <li>• Entreprise individuelle immatriculée</li>
+                <li>• Responsable : Elias EPHREM BOUSTANY</li>
+                <li>• Activité : audits et formations en cybersécurité hospitalière</li>
+                <li>• Statut : étudiant en licence de physique</li>
+              </ul>
+              <div class="mt-4 text-xs text-slate-500">
+                Le site web a une vocation académique et pédagogique ; les services sont proposés dans le respect des cadres légaux et réglementaires.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact / Footer -->
+    <section id="contact" class="py-14 sm:py-18">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-10 items-start">
+          <div class="lg:col-span-5">
+            <h2 class="reveal text-2xl sm:text-3xl font-semibold tracking-tight gradient-text-2">Contact académique & professionnel</h2>
+            <p class="reveal delay-1 mt-4 text-slate-600 leading-relaxed">
+              Pour une discussion scientifique, un échange pédagogique, une relecture méthodologique, ou pour en savoir plus sur les <span class="font-semibold text-emerald-600">audits et formations</span>.
+            </p>
+
+            <div class="reveal delay-2 mt-6 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 shadow-sm">
+              <div class="text-sm font-semibold text-emerald-900">Mentions</div>
+              <ul class="mt-3 space-y-2 text-sm text-slate-700">
+                <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Entreprise réelle (audits pour CHU, labos, cliniques)</span></li>
+                <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500"></span><span>Formations en ligne & bootcamps post-audit</span></li>
+                <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>Approche académique et rigoureuse</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="reveal delay-2 rounded-3xl border border-cyan-200 bg-cyan-50/70 p-6 shadow-sm">
+              <form id="contactForm" class="grid sm:grid-cols-2 gap-4" action="https://formsubmit.co/medsec.contact@gmail.com" method="POST" target="hidden_iframe">
+                <!-- Anti-spam (honeypot) -->
+                <input class="hidden" type="text" name="_honey" tabindex="-1" autocomplete="off" />
+
+                <!-- FormSubmit configuration (no mailto) -->
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="_template" value="table" />
+                <input type="hidden" id="replyTo" name="_replyto" value="" />
+                <input type="hidden" name="_subject" value="[MedSec] Contact — site" />
+
+                <div>
+                  <label class="text-sm font-medium text-cyan-900" for="name">Nom / organisation</label>
+                  <input id="name" name="organisation" type="text" required class="mt-2 w-full rounded-2xl border border-cyan-200 bg-white px-4 py-3 text-sm shadow-sm text-cyan-900" placeholder="Ex : Master SSI / CHU / Biomédical" />
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-cyan-900" for="email">Email</label>
+                  <input id="email" name="email" type="email" required class="mt-2 w-full rounded-2xl border border-cyan-200 bg-white px-4 py-3 text-sm shadow-sm text-cyan-900" placeholder="prenom.nom@..." />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="text-sm font-medium text-cyan-900" for="msg">Message</label>
+                  <textarea id="msg" name="message" rows="4" required class="mt-2 w-full rounded-2xl border border-cyan-200 bg-white px-4 py-3 text-sm shadow-sm text-cyan-900" placeholder="Sujet, contexte, objectifs pédagogiques, attentes, demande d'audit ou de formation..."></textarea>
+                </div>
+
+                <div class="sm:col-span-2 mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <button id="sendBtn" type="submit" class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 text-sm text-white shadow-sm hover:bg-emerald-700 transition-all hover:scale-105">
+                    Envoyer le message
+                  </button>
+                  <div class="text-xs text-slate-500">
+                    Envoi automatique (sans mailto). Si l'envoi échoue, un mode "copier/coller" est proposé.
+                  </div>
+                </div>
+
+                <div id="contactStatus" class="sm:col-span-2 hidden rounded-2xl border border-cyan-200 bg-cyan-50/70 p-4 text-sm text-cyan-900" aria-live="polite"></div>
+
+                <div id="contactFallback" class="sm:col-span-2 hidden rounded-2xl border border-amber-200 bg-amber-50/80 p-4">
+                  <div class="text-sm font-semibold text-amber-900">Envoi indisponible</div>
+                  <div class="mt-1 text-xs text-amber-900/90">Copiez le contenu ci-dessous et envoyez-le à <span class="font-semibold">medsec.contact@gmail.com</span> depuis votre messagerie.</div>
+                  <textarea id="fallbackText" readonly rows="6" class="mt-3 w-full rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-800"></textarea>
+                  <div class="mt-3 flex flex-col sm:flex-row flex-wrap gap-2">
+                    <button type="button" id="copyMsgBtn" class="inline-flex items-center justify-center rounded-2xl bg-amber-600 px-4 py-2.5 text-sm text-white shadow-sm hover:bg-amber-700 transition-all">
+                      Copier le message
+                    </button>
+                    <button type="button" id="openGmailBtn" class="inline-flex items-center justify-center rounded-2xl border border-amber-300 bg-white px-4 py-2.5 text-sm text-amber-800 shadow-sm hover:bg-amber-50 transition-all">
+                      Ouvrir Gmail (web)
+                    </button>
+                    <button type="button" id="openOutlookBtn" class="inline-flex items-center justify-center rounded-2xl border border-amber-300 bg-white px-4 py-2.5 text-sm text-amber-800 shadow-sm hover:bg-amber-50 transition-all">
+                      Ouvrir Outlook (web)
+                    </button>
+                    <button type="button" id="retrySendBtn" class="inline-flex items-center justify-center rounded-2xl border border-amber-300 bg-white px-4 py-2.5 text-sm text-amber-800 shadow-sm hover:bg-amber-50 transition-all">
+                      Réessayer l'envoi
+                    </button>
+                  </div>
+                </div>
+              </form>
+              <iframe name="hidden_iframe" class="hidden" title="Envoi formulaire (invisible)"></iframe>
+
+              <div class="mt-6 grid md:grid-cols-3 gap-3 text-sm">
+                <a class="rounded-2xl border border-cyan-200 bg-white/80 p-4 hover:bg-cyan-50 transition resource-card" href="https://www.ssi.gouv.fr/administration/secteur-sante/" target="_blank" rel="noreferrer">
+                  <div class="font-medium text-cyan-900">Ressources Santé (ANSSI)</div>
+                  <div class="text-xs text-cyan-700 mt-1">Guides et recommandations</div>
+                </a>
+                <a class="rounded-2xl border border-cyan-200 bg-white/80 p-4 hover:bg-cyan-50 transition resource-card" href="https://www.cert.ssi.gouv.fr/" target="_blank" rel="noreferrer">
+                  <div class="font-medium text-cyan-900">CERT-FR</div>
+                  <div class="text-xs text-cyan-700 mt-1">Alertes et bulletins</div>
+                </a>
+                <a class="rounded-2xl border border-cyan-200 bg-white/80 p-4 hover:bg-cyan-50 transition resource-card" href="https://www.legifrance.gouv.fr/" target="_blank" rel="noreferrer">
+                  <div class="font-medium text-cyan-900">Mentions légales</div>
+                  <div class="text-xs text-cyan-700 mt-1">Références réglementaires</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="border-t border-emerald-200 bg-emerald-50/60">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div class="md:col-span-2">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 via-cyan-400 to-sky-400"></div>
+              <div>
+                <div class="font-semibold gradient-text-2">MedSec</div>
+                <div class="text-sm text-slate-600">Comprendre et analyser la cybersécurité hospitalière</div>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-slate-600 max-w-xl">
+              Plateforme vitrine académique et professionnelle. Le contenu vise la compréhension, la prévention et la rigueur méthodologique.
+              Aucune donnée sensible n'est collectée.
+            </p>
+            <p class="mt-3 text-xs text-slate-500">
+              Entreprise réelle : audits pour CHU, laboratoires, cliniques. Formations en ligne & bootcamps post-audit. Elias EPHREM BOUSTANY, étudiant en licence de physique.
+            </p>
+          </div>
+          <div>
+            <div class="text-sm font-semibold text-emerald-900">Liens</div>
+            <ul class="mt-3 space-y-2 text-sm">
+              <li><a class="text-emerald-700 hover:text-emerald-900" href="#bases">Bases techniques</a></li>
+              <li><a class="text-emerald-700 hover:text-emerald-900" href="#ressources">Ressources</a></li>
+              <li><a class="text-emerald-700 hover:text-emerald-900" href="#ethique">Approche éthique</a></li>
+              <li><a class="text-emerald-700 hover:text-emerald-900" href="#a-propos">À propos</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="text-sm font-semibold text-emerald-900">Mentions</div>
+            <ul class="mt-3 space-y-2 text-sm text-slate-600">
+              <li>Entreprise individuelle</li>
+              <li>Elias EPHREM BOUSTANY</li>
+              <li>Licence de physique</li>
+              <li>Audits & formations</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-slate-500">
+          <div>© <span id="year"></span> MedSec — contenu pédagogique et professionnel.</div>
+          <div>Conçu pour clarté, sérieux et sobriété.</div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <a href="#top" id="toTop" class="fab inline-flex items-center gap-2 rounded-2xl border border-emerald-200 bg-white/90 px-4 py-3 text-sm shadow-sm hover:bg-white transition-all hover:scale-105" aria-label="Revenir en haut de page">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 19V6" stroke="rgba(15,23,42,.8)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M7 10l5-5 5 5" stroke="rgba(16,185,129,.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Haut
+  </a>
+
+  <!-- Resource Modal Overlay -->
+  <div id="resourceModal" class="resource-modal">
+    <div class="resource-modal-content">
+      <button class="resource-close" id="closeModal">Fermer ✕</button>
+      <div class="resource-detail" id="modalContent">
+        <!-- Content injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Utilities
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+    // Mobile menu
+    const menuBtn = $('#menuBtn');
+    const mobileMenu = $('#mobileMenu');
+    menuBtn?.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('hidden') === false;
+      menuBtn.setAttribute('aria-expanded', String(isOpen));
+    });
+    $$('#mobileMenu a').forEach(a => a.addEventListener('click', () => {
+      if(!mobileMenu.classList.contains('hidden')){
+        mobileMenu.classList.add('hidden');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      }
+    }));
+
+    // Scroll reveal
+    const revealEls = $$('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      for(const e of entries){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      }
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+
+    // Timeline progress
+    const tl = $('#timelineProgress');
+    const tlWrap = $('#medsec');
+    const ioTL = new IntersectionObserver((entries) => {
+      for(const e of entries){
+        if(e.isIntersecting){
+          tl.classList.add('fill');
+          ioTL.disconnect();
+        }
+      }
+    }, { threshold: 0.35 });
+    ioTL.observe(tlWrap);
+
+    // Tabs
+    const tabBtns = $$('.tabBtn');
+    const panels = {
+      wifi: $('#panel-wifi'),
+      equip: $('#panel-equip'),
+      proto: $('#panel-proto'),
+      crit: $('#panel-crit'),
+    };
+    function setTab(key){
+      tabBtns.forEach(b => {
+        const active = b.dataset.tab === key;
+        b.setAttribute('aria-selected', String(active));
+        b.classList.toggle('bg-emerald-50', active);
+        b.classList.toggle('bg-emerald-50/70', !active);
+        b.classList.toggle('scale-105', active);
+      });
+      Object.entries(panels).forEach(([k, p]) => {
+        if(!p) return;
+        const show = k === key;
+        p.classList.toggle('hidden', !show);
+        if(show){
+          p.classList.add('reveal');
+          requestAnimationFrame(() => p.classList.add('in'));
+        } else {
+          p.classList.remove('in');
+        }
+      });
+    }
+    tabBtns.forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+
+    // Counters
+    function animateCounter(el){
+      const target = Number(el.dataset.target || '0');
+      const suffix = el.dataset.suffix || '';
+      const prefix = el.dataset.prefix || '';
+      const duration = 1200;
+      const start = performance.now();
+
+      function tick(t){
+        const p = Math.min(1, (t - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = Math.round(target * eased);
+        el.textContent = `${prefix}${val}${suffix}`;
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const counters = $$('.counter');
+    const ioCount = new IntersectionObserver((entries) => {
+      for(const e of entries){
+        if(e.isIntersecting){
+          const el = e.target;
+          if(!el.dataset.done){
+            el.dataset.done = '1';
+            animateCounter(el);
+          }
+        }
+      }
+    }, { threshold: 0.35 });
+    counters.forEach(c => ioCount.observe(c));
+
+    // Back-to-top
+    const toTop = $('#toTop');
+    window.addEventListener('scroll', () => {
+      const show = window.scrollY > 700;
+      toTop.classList.toggle('show', show);
+    }, { passive: true });
+
+    // Year
+    $('#year').textContent = new Date().getFullYear();
+
+    // Resource filters
+    const filterButtons = $$('.resource-filter');
+    const resourceCards = $$('#resourceGrid article');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        // Update active button style
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-emerald-600', 'text-white');
+          b.classList.add('bg-white', 'text-emerald-700');
+        });
+        btn.classList.remove('bg-white', 'text-emerald-700');
+        btn.classList.add('bg-emerald-600', 'text-white');
+
+        // Filter cards
+        resourceCards.forEach(card => {
+          if(filter === 'all' || card.dataset.cat === filter) {
+            card.style.display = 'block';
+            // Add a subtle animation
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+              card.style.transition = 'opacity 300ms ease, transform 300ms ease';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, 50);
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Resource modal (click on card to open)
+    const modal = $('#resourceModal');
+    const modalContent = $('#modalContent');
+    const closeModal = $('#closeModal');
+
+    function openModal(title, meta, desc, badges, content){
+      const badgesHTML = badges.split(',').map(b => `<span>${b.trim()}</span>`).join('');
+      modalContent.innerHTML = `
+        <h3>${title}</h3>
+        <div class="meta">${meta}</div>
+        <p><strong>Description :</strong> ${desc}</p>
+        <p>${content}</p>
+        <div class="badges">${badgesHTML}</div>
+      `;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModalFunc(){
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    resourceCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const title = card.dataset.title;
+        const meta = card.dataset.meta;
+        const desc = card.dataset.desc;
+        const badges = card.dataset.badges;
+        const content = card.dataset.content;
+        openModal(title, meta, desc, badges, content);
+      });
+    });
+
+    closeModal.addEventListener('click', closeModalFunc);
+    modal.addEventListener('click', (e) => {
+      if(e.target === modal) closeModalFunc();
+    });
+
+    // Scenario simulation (non-exploitable, educational)
+    const scenarios = {
+      wifi: {
+        title: 'Perturbation Wi‑Fi en zone de soins',
+        meta: 'Exemple : dégradation de disponibilité et effets sur les usages mobiles.',
+        steps: [
+          { t: 'Contexte', d: 'Un service dépend d’un Wi‑Fi segmenté (soins / invités). La mobilité est nécessaire au quotidien.' },
+          { t: 'Signal faible / interférences', d: 'La qualité radio se dégrade : pertes, latence, intermittences.' },
+          { t: 'Effet clinique', d: 'Applications mobiles/traçabilité/VoWiFi : ralentissements, reports d’usage, repli sur procédures.' },
+          { t: 'Lecture sécurité', d: 'On distingue incident technique vs incident cyber, puis on vérifie l’absence d’anomalies (authentification, accès, segmentation).' },
+          { t: 'Réduction du risque', d: 'Plan radio, supervision, séparation stricte, procédures de repli et tests réguliers.' }
+        ],
+        takeaways: [
+          'Disponibilité réseau = enjeu sécurité en milieu critique.',
+          'La supervision aide à distinguer panne, interférence et anomalie.',
+          'Segmentation et contrôle d’accès réduisent l’impact transversal.'
+        ]
+      },
+      ransom: {
+        title: 'Indisponibilité SI (type rançongiciel)',
+        meta: 'Scénario centré sur la continuité et la restauration, sans détails d’attaque.',
+        steps: [
+          { t: 'Contexte', d: 'Des systèmes bureautiques et des applications cliniques coexistent, avec de fortes dépendances.' },
+          { t: 'Détection', d: 'Signaux : indisponibilités, erreurs d’accès, alertes supervision. L’objectif est de contenir rapidement.' },
+          { t: 'Mesures immédiates (concept)', d: 'Isolement de segments, bascule en mode dégradé, priorisation des services vitaux.' },
+          { t: 'Restauration', d: 'Validation des sauvegardes, reconstruction progressive, contrôle de cohérence des applications.' },
+          { t: 'Retour d’expérience', d: 'Amélioration des procédures, tests de restauration, segmentation, inventaire, sensibilisation.' }
+        ],
+        takeaways: [
+          'La préparation (sauvegardes testées, procédures) conditionne la durée d’indisponibilité.',
+          'La priorisation clinique guide l’ordre de restauration.',
+          'La réduction d’exposition limite la propagation.'
+        ]
+      },
+      interop: {
+        title: 'Incident d’interopérabilité (DICOM/HL7)',
+        meta: 'Chaînes d’échange cliniques : un dysfonctionnement peut ressembler à un incident cyber.',
+        steps: [
+          { t: 'Contexte', d: 'Flux DICOM/HL7 entre SIH/RIS, PACS, stations et intermédiaires d’interopérabilité.' },
+          { t: 'Anomalie', d: 'Retards, examens non visibles, doublons, ou échecs d’envoi : alerte utilisateur.' },
+          { t: 'Lecture technique', d: 'On compare le flux attendu au flux observé (routing, files d’attente, erreurs), sans exposer de détails sensibles.' },
+          { t: 'Lecture sécurité', d: 'On vérifie l’accès, la segmentation, la traçabilité et les changements récents (configurations, mises à jour).' },
+          { t: 'Stabilisation', d: 'Documentation des flux, contrôles d’accès, supervision, et procédures de contournement validées.' }
+        ],
+        takeaways: [
+          'Interopérabilité = complexité ; la documentation des flux est un outil de sécurité.',
+          'Journalisation et supervision facilitent le diagnostic.',
+          'Sécurité et qualité de service doivent être alignées.'
+        ]
+      },
+      tiers: {
+        title: 'Risque via prestataire / maintenance',
+        meta: 'Accès externes nécessaires : gouvernance, traçabilité et moindre privilège.',
+        steps: [
+          { t: 'Contexte', d: 'Des prestataires interviennent pour maintenance applicative, biomédicale ou infrastructure.' },
+          { t: 'Besoin d’accès', d: 'Accès distant ou sur site : la question est “qui, quand, pourquoi, comment tracer ?”.' },
+          { t: 'Risques (concept)', d: 'Comptes partagés, absence de MFA, droits trop larges, sessions non journalisées.' },
+          { t: 'Mesures de maîtrise', d: 'MFA, comptes nominatifs, accès temporaires, bastion, journalisation et validation des changements.' },
+          { t: 'Gouvernance', d: 'Contrats, responsabilités, procédures de sécurité, et exercices de crise intégrant les prestataires.' }
+        ],
+        takeaways: [
+          'L’accès prestataire est normal : c’est la gouvernance qui fait la différence.',
+          'Traçabilité + moindre privilège réduisent les risques.',
+          'Les exercices de crise doivent inclure les tiers.'
+        ]
+      }
+    };
+
+    const scenarioSelect = $('#scenarioSelect');
+    const runSim = $('#runSim');
+    const resetSim = $('#resetSim');
+    const simSteps = $('#simSteps');
+    const simTakeaways = $('#simTakeaways');
+    const simMeta = $('#simMeta');
+    const simBar = $('#simBar');
+
+    function resetSimulation(){
+      simSteps.innerHTML = '';
+      simTakeaways.innerHTML = '<li class="text-slate-500">Les points clés apparaîtront ici après la simulation.</li>';
+      simBar.style.width = '0%';
+      simMeta.textContent = 'Sélectionnez un scénario puis lancez la simulation.';
+    }
+
+    function renderStepCard(step, i){
+      const card = document.createElement('div');
+      card.className = 'rounded-2xl border border-emerald-200 bg-white/80 p-4 opacity-0 translate-y-2 transition-all duration-700';
+      card.innerHTML = `
+        <div class="flex items-center justify-between gap-4">
+          <div class="text-sm font-semibold text-emerald-900">${escapeHTML(step.t)}</div>
+          <div class="text-xs text-emerald-700">Étape ${i+1}</div>
+        </div>
+        <div class="mt-2 text-sm text-slate-700">${escapeHTML(step.d)}</div>
+      `;
+      return card;
+    }
+
+    let simRunning = false;
+    async function runSimulation(){
+      if(simRunning) return;
+      simRunning = true;
+      resetSimulation();
+
+      const key = scenarioSelect.value;
+      const sc = scenarios[key];
+      simMeta.textContent = sc.meta;
+
+      // Render hidden cards
+      const cards = sc.steps.map((s, i) => {
+        const c = renderStepCard(s, i);
+        simSteps.appendChild(c);
+        return c;
+      });
+
+      // Reveal progressively
+      for(let i=0;i<cards.length;i++){
+        await new Promise(res => setTimeout(res, 650));
+        cards[i].classList.remove('opacity-0','translate-y-2');
+        simBar.style.width = Math.round(((i+1)/cards.length)*100) + '%';
+      }
+
+      // Takeaways
+      simTakeaways.innerHTML = '';
+      sc.takeaways.forEach(t => {
+        const li = document.createElement('li');
+        li.className = 'flex gap-2';
+        li.innerHTML = `<span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>${escapeHTML(t)}</span>`;
+        simTakeaways.appendChild(li);
+      });
+
+      simRunning = false;
+    }
+
+    runSim.addEventListener('click', runSimulation);
+    resetSim.addEventListener('click', resetSimulation);
+    scenarioSelect.addEventListener('change', resetSimulation);
+
+    // Contact: send automatically (no mailto) via FormSubmit endpoint
+    // IMPORTANT: For FormSubmit to deliver emails reliably, you may need to validate the recipient once.
+    const contactForm = $('#contactForm');
+    const contactStatus = $('#contactStatus');
+    const contactFallback = $('#contactFallback');
+    const fallbackText = $('#fallbackText');
+    const copyMsgBtn = $('#copyMsgBtn');
+    const openGmailBtn = $('#openGmailBtn');
+    const openOutlookBtn = $('#openOutlookBtn');
+    const retrySendBtn = $('#retrySendBtn');
+
+    const FORM_ENDPOINT = 'https://formsubmit.co/ajax/medsec.contact@gmail.com';
+
+    function buildFallbackMessage(){
+      const name = $('#name').value.trim();
+      const email = $('#email').value.trim();
+      const msg = $('#msg').value.trim();
+      const now = new Date().toISOString();
+      return `MedSec — Message depuis le site\n\nDate : ${now}\nNom / organisation : ${name || '(non précisé)'}\nEmail : ${email || '(non précisé)'}\n\nMessage :\n${msg || '(message non précisé)'}\n`;
+    }
+
+    function showStatus(kind, text){
+      contactStatus.classList.remove('hidden');
+      contactStatus.classList.toggle('border-emerald-200', kind === 'success');
+      contactStatus.classList.toggle('bg-emerald-50/70', kind === 'success');
+      contactStatus.classList.toggle('text-emerald-900', kind === 'success');
+      contactStatus.classList.toggle('border-cyan-200', kind !== 'success');
+      contactStatus.classList.toggle('bg-cyan-50/70', kind !== 'success');
+      contactStatus.classList.toggle('text-cyan-900', kind !== 'success');
+      contactStatus.textContent = text;
+    }
+
+    function showFallback(){
+      fallbackText.value = buildFallbackMessage();
+      contactFallback.classList.remove('hidden');
+    }
+
+    async function submitContact(){
+      // Basic validation
+      const nameEl = document.getElementById('name');
+      const emailEl = document.getElementById('email');
+      const msgEl = document.getElementById('msg');
+      const name = (nameEl?.value || '').trim();
+      const email = (emailEl?.value || '').trim();
+      const msg = (msgEl?.value || '').trim();
+
+      contactFallback.classList.add('hidden');
+
+      if(!name || !email || !msg){
+        showStatus('info', 'Merci de remplir les champs : nom/organisation, email et message.');
+        return;
+      }
+
+      // Sync reply-to
+      const replyTo = document.getElementById('replyTo');
+      if(replyTo) replyTo.value = email;
+
+      showStatus('info', 'Envoi en cours…');
+
+      // 1) Try AJAX (best UX)
+      try{
+        const formData = new FormData(contactForm);
+        formData.set('organisation', name);
+        formData.set('email', email);
+        formData.set('message', msg);
+
+        const res = await fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: formData
+        });
+
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+
+        // Some environments return empty body; consider success if HTTP OK
+        showStatus('success', 'Message envoyé. Merci — nous revenons vers vous dès que possible.');
+        contactForm.reset();
+        contactFallback.classList.add('hidden');
+        return;
+      } catch (err){
+        console.warn('AJAX send failed, falling back to hidden POST:', err);
+      }
+
+      // 2) Fallback: classic POST in hidden iframe (no mailto)
+      try{
+        // Ensure values are present in the form fields for POST
+        // (already in inputs)
+        contactForm.submit();
+        showStatus('success', "Envoi lancé. Si vous ne recevez pas de confirmation, utilisez le mode copier/coller ci-dessous.");
+        // Also show fallback content for maximum reliability
+        showFallback();
+      } catch (err2){
+        console.warn('Hidden POST failed:', err2);
+        showStatus('info', "Impossible d'envoyer automatiquement depuis ce navigateur/réseau. Utilisez le mode copier/coller ci-dessous.");
+        showFallback();
+      }
+    }
+
+    // Submit handler
+    if(contactForm){
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        submitContact();
+      });
+    }
+
+    // Extra safety: click handler (some browsers/extensions interfere with submit)
+    const sendBtnEl = document.getElementById('sendBtn');
+    if(sendBtnEl){
+      sendBtnEl.addEventListener('click', (e) => {
+        e.preventDefault();
+        submitContact();
+      });
+    }
+
+    copyMsgBtn?.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(fallbackText.value);
+        showStatus('success', 'Message copié dans le presse‑papiers.');
+      } catch {
+        fallbackText.focus();
+        fallbackText.select();
+        showStatus('info', 'Copie automatique indisponible. Sélectionnez le texte puis copiez-le (Ctrl/Cmd+C).');
+      }
+    });
+
+    function buildWebmailLinks(){
+      const subject = '[MedSec] Contact — site';
+      const body = buildFallbackMessage();
+
+      const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent('medsec.contact@gmail.com')}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const outlook = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent('medsec.contact@gmail.com')}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return { gmail, outlook };
+    }
+
+    openGmailBtn?.addEventListener('click', () => {
+      const { gmail } = buildWebmailLinks();
+      window.open(gmail, '_blank', 'noopener,noreferrer');
+    });
+
+    openOutlookBtn?.addEventListener('click', () => {
+      const { outlook } = buildWebmailLinks();
+      window.open(outlook, '_blank', 'noopener,noreferrer');
+    });
+
+    retrySendBtn?.addEventListener('click', () => submitContact());
+
+    // Minor: close mobile menu on hash change (e.g., via buttons)
+    window.addEventListener('hashchange', () => {
+      if(!mobileMenu.classList.contains('hidden')){
+        mobileMenu.classList.add('hidden');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Initialize simulation area
+    resetSimulation();
+
+    // Escape HTML helper (compatible, avoids replaceAll)
+    function escapeHTML(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // NEW: Resource content toggle (accordion)
+    function toggleResource(id) {
+      const card = document.querySelector(`[data-resource="${id}"]`);
+      const content = document.getElementById(`${id}-content`);
+      
+      if (!card || !content) return;
+      
+      // Close all other open cards
+      document.querySelectorAll('.resource-card.open').forEach(openCard => {
+        if (openCard !== card) {
+          const openId = openCard.dataset.resource;
+          const openContent = document.getElementById(`${openId}-content`);
+          openCard.classList.remove('open');
+          if (openContent) openContent.classList.remove('open');
+        }
+      });
+      
+      // Toggle current card
+      card.classList.toggle('open');
+      content.classList.toggle('open');
+    }
+
+    // NEW: Smooth scroll for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href.length > 1) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
