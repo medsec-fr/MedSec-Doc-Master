@@ -1542,7 +1542,7 @@
           <div class="lg:col-span-7">
             <h2 class="reveal text-2xl sm:text-3xl font-semibold tracking-tight gradient-text-2">À propos de MedSec</h2>
             <p class="reveal delay-1 mt-4 text-slate-600 leading-relaxed">
-              MedSec est une <span class="font-semibold text-emerald-600">entreprise réelle</span>, fondée et dirigée par <span class="font-semibold text-cyan-600">Elias EPHREM BOUSTANY</span>, étudiant en licence de physique.
+              MedSec est une <span class="font-semibold text-emerald-600">entreprise</span> fondée et dirigée par <span class="font-semibold text-cyan-600">Elias EPHREM BOUSTANY</span>, étudiant en licence de physique.
             </p>
             <p class="reveal delay-2 mt-3 text-slate-600 leading-relaxed">
               Elle propose des <span class="font-semibold text-emerald-600">audits de cybersécurité</span> pour des <span class="font-semibold text-cyan-600">CHU, laboratoires et cliniques</span>, ainsi que des <span class="font-semibold text-sky-600">formations en ligne et des bootcamps</span> destinés aux équipes ayant bénéficié d'un audit.
@@ -1579,7 +1579,6 @@
             <div class="reveal delay-2 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 shadow-sm">
               <div class="text-sm font-semibold text-emerald-900">Mentions légales</div>
               <ul class="mt-3 space-y-2 text-sm text-slate-700">
-                <li>• Entreprise individuelle immatriculée</li>
                 <li>• Responsable : Elias EPHREM BOUSTANY</li>
                 <li>• Activité : audits et formations en cybersécurité hospitalière</li>
                 <li>• Statut : étudiant en licence de physique</li>
@@ -1606,7 +1605,7 @@
             <div class="reveal delay-2 mt-6 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 shadow-sm">
               <div class="text-sm font-semibold text-emerald-900">Mentions</div>
               <ul class="mt-3 space-y-2 text-sm text-slate-700">
-                <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Entreprise réelle (audits pour CHU, labos, cliniques)</span></li>
+                <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></span><span>Audits pour CHU, laboratoires, cliniques</span></li>
                 <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-sky-500"></span><span>Formations en ligne & bootcamps post-audit</span></li>
                 <li class="flex gap-2"><span class="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-500"></span><span>Approche académique et rigoureuse</span></li>
               </ul>
@@ -1615,61 +1614,52 @@
 
           <div class="lg:col-span-7">
             <div class="reveal delay-2 rounded-3xl border border-cyan-200 bg-cyan-50/70 p-6 shadow-sm">
-              <form id="contactForm" class="grid sm:grid-cols-2 gap-4" action="https://formsubmit.co/medsec.contact@gmail.com" method="POST" target="hidden_iframe">
-                <!-- Anti-spam (honeypot) -->
-                <input class="hidden" type="text" name="_honey" tabindex="-1" autocomplete="off" />
-
-                <!-- FormSubmit configuration (no mailto) -->
-                <input type="hidden" name="_captcha" value="false" />
-                <input type="hidden" name="_template" value="table" />
-                <input type="hidden" id="replyTo" name="_replyto" value="" />
-                <input type="hidden" name="_subject" value="[MedSec] Contact — site" />
-
-                <div>
-                  <label class="text-sm font-medium text-cyan-900" for="name">Nom / organisation</label>
-                  <input id="name" name="organisation" type="text" required class="mt-2 w-full rounded-2xl border border-cyan-200 bg-white px-4 py-3 text-sm shadow-sm text-cyan-900" placeholder="Ex : Master SSI / CHU / Biomédical" />
+              <!-- Formulaire avec FormSubmit (envoi automatique à medsec.contact@gmail.com) -->
+              <form action="https://formsubmit.co/medsec.contact@gmail.com" method="POST" id="contactForm">
+                <!-- Configuration FormSubmit -->
+                <input type="hidden" name="_subject" value="[MedSec] Nouveau message de contact">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_next" value="">
+                <input type="text" name="_honey" style="display:none">
+                
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-sm font-medium text-cyan-900" for="name">Nom / organisation</label>
+                    <input id="name" name="Nom" type="text" required class="mt-2 w-full rounded-2xl border border-cyan-200 bg-white px-4 py-3 text-sm shadow-sm text-cyan-900" placeholder="Ex : Master SSI / CHU / Biomédical" />
+                  </div>
+                  <div>
+                    <label class="text-sm font-medium text-cyan-900" for="email">Email</label>
+                    <input id="email" name="Email" type="email" required class="mt-2 w-full rounded-2xl border border-cyan-200 bg-white px-4 py-3 text-sm shadow-sm text-cyan-900" placeholder="prenom.nom@..." />
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label class="text-sm font-medium text-cyan-900" for="msg">Message</label>
+                    <textarea id="msg" name="Message" rows="4" required class="mt-2 w-full rounded-2xl border border-cyan-200 bg-white px-4 py-3 text-sm shadow-sm text-cyan-900" placeholder="Sujet, contexte, objectifs pédagogiques, attentes, demande d'audit ou de formation..."></textarea>
+                  </div>
                 </div>
-                <div>
-                  <label class="text-sm font-medium text-cyan-900" for="email">Email</label>
-                  <input id="email" name="email" type="email" required class="mt-2 w-full rounded-2xl border border-cyan-200 bg-white px-4 py-3 text-sm shadow-sm text-cyan-900" placeholder="prenom.nom@..." />
-                </div>
-                <div class="sm:col-span-2">
-                  <label class="text-sm font-medium text-cyan-900" for="msg">Message</label>
-                  <textarea id="msg" name="message" rows="4" required class="mt-2 w-full rounded-2xl border border-cyan-200 bg-white px-4 py-3 text-sm shadow-sm text-cyan-900" placeholder="Sujet, contexte, objectifs pédagogiques, attentes, demande d'audit ou de formation..."></textarea>
-                </div>
 
-                <div class="sm:col-span-2 mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <button id="sendBtn" type="submit" class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 text-sm text-white shadow-sm hover:bg-emerald-700 transition-all hover:scale-105">
+                <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <button type="submit" id="sendBtn" class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 text-sm text-white shadow-sm hover:bg-emerald-700 transition-all hover:scale-105">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
                     Envoyer le message
                   </button>
                   <div class="text-xs text-slate-500">
-                    Envoi automatique (sans mailto). Si l'envoi échoue, un mode "copier/coller" est proposé.
-                  </div>
-                </div>
-
-                <div id="contactStatus" class="sm:col-span-2 hidden rounded-2xl border border-cyan-200 bg-cyan-50/70 p-4 text-sm text-cyan-900" aria-live="polite"></div>
-
-                <div id="contactFallback" class="sm:col-span-2 hidden rounded-2xl border border-amber-200 bg-amber-50/80 p-4">
-                  <div class="text-sm font-semibold text-amber-900">Envoi indisponible</div>
-                  <div class="mt-1 text-xs text-amber-900/90">Copiez le contenu ci-dessous et envoyez-le à <span class="font-semibold">medsec.contact@gmail.com</span> depuis votre messagerie.</div>
-                  <textarea id="fallbackText" readonly rows="6" class="mt-3 w-full rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-800"></textarea>
-                  <div class="mt-3 flex flex-col sm:flex-row flex-wrap gap-2">
-                    <button type="button" id="copyMsgBtn" class="inline-flex items-center justify-center rounded-2xl bg-amber-600 px-4 py-2.5 text-sm text-white shadow-sm hover:bg-amber-700 transition-all">
-                      Copier le message
-                    </button>
-                    <button type="button" id="openGmailBtn" class="inline-flex items-center justify-center rounded-2xl border border-amber-300 bg-white px-4 py-2.5 text-sm text-amber-800 shadow-sm hover:bg-amber-50 transition-all">
-                      Ouvrir Gmail (web)
-                    </button>
-                    <button type="button" id="openOutlookBtn" class="inline-flex items-center justify-center rounded-2xl border border-amber-300 bg-white px-4 py-2.5 text-sm text-amber-800 shadow-sm hover:bg-amber-50 transition-all">
-                      Ouvrir Outlook (web)
-                    </button>
-                    <button type="button" id="retrySendBtn" class="inline-flex items-center justify-center rounded-2xl border border-amber-300 bg-white px-4 py-2.5 text-sm text-amber-800 shadow-sm hover:bg-amber-50 transition-all">
-                      Réessayer l'envoi
-                    </button>
+                    Votre message sera envoyé directement à MedSec.
                   </div>
                 </div>
               </form>
-              <iframe name="hidden_iframe" class="hidden" title="Envoi formulaire (invisible)"></iframe>
+
+              <div id="successMessage" class="mt-4 hidden rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <div class="text-sm font-semibold text-emerald-900">Message envoyé avec succès !</div>
+                </div>
+                <div class="mt-2 text-xs text-emerald-700">Nous vous répondrons dans les plus brefs délais.</div>
+              </div>
 
               <div class="mt-6 grid md:grid-cols-3 gap-3 text-sm">
                 <a class="rounded-2xl border border-cyan-200 bg-white/80 p-4 hover:bg-cyan-50 transition resource-card" href="https://www.ssi.gouv.fr/administration/secteur-sante/" target="_blank" rel="noreferrer">
@@ -1707,7 +1697,7 @@
               Aucune donnée sensible n'est collectée.
             </p>
             <p class="mt-3 text-xs text-slate-500">
-              Entreprise réelle : audits pour CHU, laboratoires, cliniques. Formations en ligne & bootcamps post-audit. Elias EPHREM BOUSTANY, étudiant en licence de physique.
+              Audits pour CHU, laboratoires, cliniques. Formations en ligne & bootcamps post-audit. Elias EPHREM BOUSTANY, étudiant en licence de physique.
             </p>
           </div>
           <div>
@@ -1722,7 +1712,6 @@
           <div>
             <div class="text-sm font-semibold text-emerald-900">Mentions</div>
             <ul class="mt-3 space-y-2 text-sm text-slate-600">
-              <li>Entreprise individuelle</li>
               <li>Elias EPHREM BOUSTANY</li>
               <li>Licence de physique</li>
               <li>Audits & formations</li>
@@ -2081,152 +2070,23 @@
     resetSim.addEventListener('click', resetSimulation);
     scenarioSelect.addEventListener('change', resetSimulation);
 
-    // Contact: send automatically (no mailto) via FormSubmit endpoint
-    // IMPORTANT: For FormSubmit to deliver emails reliably, you may need to validate the recipient once.
+    // Contact form handling
     const contactForm = $('#contactForm');
-    const contactStatus = $('#contactStatus');
-    const contactFallback = $('#contactFallback');
-    const fallbackText = $('#fallbackText');
-    const copyMsgBtn = $('#copyMsgBtn');
-    const openGmailBtn = $('#openGmailBtn');
-    const openOutlookBtn = $('#openOutlookBtn');
-    const retrySendBtn = $('#retrySendBtn');
-
-    const FORM_ENDPOINT = 'https://formsubmit.co/ajax/medsec.contact@gmail.com';
-
-    function buildFallbackMessage(){
-      const name = $('#name').value.trim();
-      const email = $('#email').value.trim();
-      const msg = $('#msg').value.trim();
-      const now = new Date().toISOString();
-      return `MedSec — Message depuis le site\n\nDate : ${now}\nNom / organisation : ${name || '(non précisé)'}\nEmail : ${email || '(non précisé)'}\n\nMessage :\n${msg || '(message non précisé)'}\n`;
-    }
-
-    function showStatus(kind, text){
-      contactStatus.classList.remove('hidden');
-      contactStatus.classList.toggle('border-emerald-200', kind === 'success');
-      contactStatus.classList.toggle('bg-emerald-50/70', kind === 'success');
-      contactStatus.classList.toggle('text-emerald-900', kind === 'success');
-      contactStatus.classList.toggle('border-cyan-200', kind !== 'success');
-      contactStatus.classList.toggle('bg-cyan-50/70', kind !== 'success');
-      contactStatus.classList.toggle('text-cyan-900', kind !== 'success');
-      contactStatus.textContent = text;
-    }
-
-    function showFallback(){
-      fallbackText.value = buildFallbackMessage();
-      contactFallback.classList.remove('hidden');
-    }
-
-    async function submitContact(){
-      // Basic validation
-      const nameEl = document.getElementById('name');
-      const emailEl = document.getElementById('email');
-      const msgEl = document.getElementById('msg');
-      const name = (nameEl?.value || '').trim();
-      const email = (emailEl?.value || '').trim();
-      const msg = (msgEl?.value || '').trim();
-
-      contactFallback.classList.add('hidden');
-
-      if(!name || !email || !msg){
-        showStatus('info', 'Merci de remplir les champs : nom/organisation, email et message.');
-        return;
+    const successMessage = $('#successMessage');
+    
+    // Set the _next URL to current page for redirect after submission
+    if (contactForm) {
+      const nextInput = contactForm.querySelector('input[name="_next"]');
+      if (nextInput) {
+        nextInput.value = window.location.href + '#contact';
       }
-
-      // Sync reply-to
-      const replyTo = document.getElementById('replyTo');
-      if(replyTo) replyTo.value = email;
-
-      showStatus('info', 'Envoi en cours…');
-
-      // 1) Try AJAX (best UX)
-      try{
-        const formData = new FormData(contactForm);
-        formData.set('organisation', name);
-        formData.set('email', email);
-        formData.set('message', msg);
-
-        const res = await fetch(FORM_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: formData
-        });
-
-        if(!res.ok) throw new Error('HTTP ' + res.status);
-
-        // Some environments return empty body; consider success if HTTP OK
-        showStatus('success', 'Message envoyé. Merci — nous revenons vers vous dès que possible.');
+      
+      // Check if we're returning from a successful submission
+      if (window.location.search.includes('success') || document.referrer.includes('formsubmit.co')) {
+        successMessage.classList.remove('hidden');
         contactForm.reset();
-        contactFallback.classList.add('hidden');
-        return;
-      } catch (err){
-        console.warn('AJAX send failed, falling back to hidden POST:', err);
-      }
-
-      // 2) Fallback: classic POST in hidden iframe (no mailto)
-      try{
-        // Ensure values are present in the form fields for POST
-        // (already in inputs)
-        contactForm.submit();
-        showStatus('success', "Envoi lancé. Si vous ne recevez pas de confirmation, utilisez le mode copier/coller ci-dessous.");
-        // Also show fallback content for maximum reliability
-        showFallback();
-      } catch (err2){
-        console.warn('Hidden POST failed:', err2);
-        showStatus('info', "Impossible d'envoyer automatiquement depuis ce navigateur/réseau. Utilisez le mode copier/coller ci-dessous.");
-        showFallback();
       }
     }
-
-    // Submit handler
-    if(contactForm){
-      contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        submitContact();
-      });
-    }
-
-    // Extra safety: click handler (some browsers/extensions interfere with submit)
-    const sendBtnEl = document.getElementById('sendBtn');
-    if(sendBtnEl){
-      sendBtnEl.addEventListener('click', (e) => {
-        e.preventDefault();
-        submitContact();
-      });
-    }
-
-    copyMsgBtn?.addEventListener('click', async () => {
-      try{
-        await navigator.clipboard.writeText(fallbackText.value);
-        showStatus('success', 'Message copié dans le presse‑papiers.');
-      } catch {
-        fallbackText.focus();
-        fallbackText.select();
-        showStatus('info', 'Copie automatique indisponible. Sélectionnez le texte puis copiez-le (Ctrl/Cmd+C).');
-      }
-    });
-
-    function buildWebmailLinks(){
-      const subject = '[MedSec] Contact — site';
-      const body = buildFallbackMessage();
-
-      const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent('medsec.contact@gmail.com')}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      const outlook = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent('medsec.contact@gmail.com')}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      return { gmail, outlook };
-    }
-
-    openGmailBtn?.addEventListener('click', () => {
-      const { gmail } = buildWebmailLinks();
-      window.open(gmail, '_blank', 'noopener,noreferrer');
-    });
-
-    openOutlookBtn?.addEventListener('click', () => {
-      const { outlook } = buildWebmailLinks();
-      window.open(outlook, '_blank', 'noopener,noreferrer');
-    });
-
-    retrySendBtn?.addEventListener('click', () => submitContact());
 
     // Minor: close mobile menu on hash change (e.g., via buttons)
     window.addEventListener('hashchange', () => {
@@ -2239,14 +2099,11 @@
     // Initialize simulation area
     resetSimulation();
 
-    // Escape HTML helper (compatible, avoids replaceAll)
+    // Escape HTML helper
     function escapeHTML(str){
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
     }
 
     // NEW: Resource content toggle (accordion)
